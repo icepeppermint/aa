@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/chat-service/aa.examples.chat-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/chat-service/aa.examples.chat-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/chat-service/aa.examples.chat-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/chat-service/aa.examples.chat-service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/route/aa.examples.route.main.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/route/aa.examples.route.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/route/aa.examples.route.test.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/route/aa.examples.route.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/streaming/aa.examples.streaming.main.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/streaming/aa.examples.streaming.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/examples/streaming/aa.examples.streaming.test.iml" filepath="$PROJECT_DIR$/.idea/modules/examples/streaming/aa.examples.streaming.test.iml" />
+    </modules>
+  </component>
+</project>
