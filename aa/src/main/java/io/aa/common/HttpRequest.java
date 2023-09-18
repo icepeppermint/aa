@@ -1,7 +1,5 @@
 package io.aa.common;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.util.concurrent.EventExecutor;
@@ -37,14 +35,7 @@ public interface HttpRequest extends HttpMessage {
     }
 
     static HttpRequest of(RequestHeaders headers, HttpData content, HttpHeaders trailers) {
-        requireNonNull(headers, "headers");
-        requireNonNull(content, "content");
-        requireNonNull(trailers, "trailers");
-        final var streaming = streaming(headers);
-        streaming.write(content);
-        streaming.write(trailers);
-        streaming.close();
-        return streaming;
+        return new DefaultHttpRequest(headers, content, trailers);
     }
 
     static HttpRequest of(RequestHeaders headers, String content, HttpHeaders trailers) {
