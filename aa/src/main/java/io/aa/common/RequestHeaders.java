@@ -4,11 +4,13 @@ import static java.util.Objects.requireNonNull;
 
 public final class RequestHeaders extends HttpHeaders {
 
-    private static final HttpVersion DEFAULT_HTTP_VERSION = HttpVersion.HTTP_1_1;
-
     private final HttpVersion protocolVersion;
     private final HttpMethod method;
     private final String path;
+
+    private RequestHeaders(HttpMethod method, String path) {
+        this(DEFAULT_HTTP_VERSION, method, path);
+    }
 
     private RequestHeaders(HttpVersion protocolVersion, HttpMethod method, String path) {
         this.protocolVersion = requireNonNull(protocolVersion, "protocolVersion");
@@ -17,7 +19,7 @@ public final class RequestHeaders extends HttpHeaders {
     }
 
     public static RequestHeaders of(HttpMethod method, String path) {
-        return new RequestHeaders(DEFAULT_HTTP_VERSION, method, path);
+        return new RequestHeaders(method, path);
     }
 
     public static RequestHeaders of(HttpVersion protocolVersion, HttpMethod method, String path) {

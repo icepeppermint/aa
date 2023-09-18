@@ -7,16 +7,20 @@ public final class HttpVersion {
     private static final String HTTP_1_0_STRING = "HTTP/1.0";
     private static final String HTTP_1_1_STRING = "HTTP/1.1";
 
-    public static final HttpVersion HTTP_1_0 = new HttpVersion(1, 0, false);
-    public static final HttpVersion HTTP_1_1 = new HttpVersion(1, 1, true);
+    public static final HttpVersion HTTP_1_0 = new HttpVersion("HTTP", 1, 0, false);
+    public static final HttpVersion HTTP_1_1 = new HttpVersion("HTTP", 1, 1, true);
 
+    private final String protocolName;
     private final int majorVersion;
     private final int minorVersion;
+    private final String text;
     private final boolean keepAliveDefault;
 
-    private HttpVersion(int majorVersion, int minorVersion, boolean keepAliveDefault) {
+    private HttpVersion(String protocolName, int majorVersion, int minorVersion, boolean keepAliveDefault) {
+        this.protocolName = requireNonNull(protocolName, "protocolName");
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
+        text = protocolName + '/' + majorVersion + '.' + minorVersion;
         this.keepAliveDefault = keepAliveDefault;
     }
 
@@ -42,6 +46,10 @@ public final class HttpVersion {
         throw new IllegalArgumentException("Unexpected HTTP version: " + text);
     }
 
+    public String protocolName() {
+        return protocolName;
+    }
+
     public int majorVersion() {
         return majorVersion;
     }
@@ -50,7 +58,16 @@ public final class HttpVersion {
         return minorVersion;
     }
 
+    public String text() {
+        return text;
+    }
+
     public boolean isKeepAliveDefault() {
         return keepAliveDefault;
+    }
+
+    @Override
+    public String toString() {
+        return text();
     }
 }

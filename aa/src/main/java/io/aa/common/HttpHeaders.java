@@ -14,6 +14,7 @@ import io.netty.handler.codec.http.DefaultHttpHeaders;
 public class HttpHeaders implements HttpObject {
 
     private static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
+    protected static final HttpVersion DEFAULT_HTTP_VERSION = HttpVersion.HTTP_1_1;
 
     private final Multimap<String, String> multimap;
 
