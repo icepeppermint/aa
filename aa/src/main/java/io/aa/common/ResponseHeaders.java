@@ -26,7 +26,7 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     public static ResponseHeaders of(int statusCode) {
-        return new ResponseHeaders(HttpStatus.valueOf(statusCode), null);
+        return of(HttpStatus.valueOf(statusCode), null);
     }
 
     public static ResponseHeaders of(HttpStatus status, MediaType contentType) {
@@ -35,8 +35,7 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     public static ResponseHeaders of(int statusCode, MediaType contentType) {
-        requireNonNull(contentType, "contentType");
-        return new ResponseHeaders(HttpStatus.valueOf(statusCode), contentType);
+        return of(HttpStatus.valueOf(statusCode), contentType);
     }
 
     public static ResponseHeaders of(HttpVersion protocolVersion, HttpStatus status, MediaType contentType) {
@@ -45,8 +44,7 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     public static ResponseHeaders of(HttpVersion protocolVersion, int statusCode, MediaType contentType) {
-        requireNonNull(contentType, "contentType");
-        return new ResponseHeaders(protocolVersion, HttpStatus.valueOf(statusCode), contentType);
+        return of(protocolVersion, HttpStatus.valueOf(statusCode), contentType);
     }
 
     @Override
