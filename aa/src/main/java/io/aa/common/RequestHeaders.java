@@ -4,21 +4,29 @@ import static java.util.Objects.requireNonNull;
 
 public final class RequestHeaders extends HttpHeaders {
 
+    private static final HttpVersion DEFAULT_HTTP_VERSION = HttpVersion.HTTP_1_1;
+
+    private final HttpVersion protocolVersion;
     private final HttpMethod method;
     private final String path;
 
-    private RequestHeaders(HttpMethod method, String path) {
+    private RequestHeaders(HttpVersion protocolVersion, HttpMethod method, String path) {
+        this.protocolVersion = requireNonNull(protocolVersion, "protocolVersion");
         this.method = requireNonNull(method, "method");
         this.path = requireNonNull(path, "path");
     }
 
     public static RequestHeaders of(HttpMethod method, String path) {
-        return new RequestHeaders(method, path);
+        return new RequestHeaders(DEFAULT_HTTP_VERSION, method, path);
+    }
+
+    public static RequestHeaders of(HttpVersion protocolVersion, HttpMethod method, String path) {
+        return new RequestHeaders(protocolVersion, method, path);
     }
 
     @Override
-    public RequestHeaders put(String key, String value) {
-        return (RequestHeaders) super.put(key, value);
+    public RequestHeaders put(String name, String value) {
+        return (RequestHeaders) super.put(name, value);
     }
 
     @Override
@@ -27,8 +35,12 @@ public final class RequestHeaders extends HttpHeaders {
     }
 
     @Override
-    public RequestHeaders removeAll(String key) {
-        return (RequestHeaders) super.removeAll(key);
+    public RequestHeaders removeAll(String name) {
+        return (RequestHeaders) super.removeAll(name);
+    }
+
+    public HttpVersion protocolVersion() {
+        return protocolVersion;
     }
 
     public HttpMethod method() {

@@ -159,15 +159,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
                 if (shouldSkip(object)) {
                     continue;
                 }
-                try {
-                    downstream.onNext(object);
-                } catch (Throwable e) {
-                    if (!terminate()) {
-                        downstream.onError(e);
-                        return;
-                    }
-                }
-                demand--;
+                process(object);
             }
         }
 
@@ -192,6 +184,19 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             requireNonNull(object, "object");
             return (object instanceof HttpData httpData && httpData.isEmpty()) ||
                    (HttpHeaders.class.equals(object.getClass()) && ((HttpHeaders) object).isEmpty());
+        }
+
+        private void process(HttpObject object) {
+            requireNonNull(object, "object");
+            try {
+                downstream.onNext(object);
+            } catch (Throwable e) {
+                if (!terminate()) {
+                    downstream.onError(e);
+                    return;
+                }
+            }
+            demand--;
         }
 
         @Override

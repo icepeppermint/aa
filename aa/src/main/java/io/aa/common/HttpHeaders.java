@@ -5,12 +5,15 @@ import static java.util.Objects.requireNonNull;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 
 public class HttpHeaders implements HttpObject {
+
+    private static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
 
     private final Multimap<String, String> multimap;
 
@@ -22,26 +25,29 @@ public class HttpHeaders implements HttpObject {
         return new HttpHeaders();
     }
 
-    public static HttpHeaders of(String k1, String v1) {
-        return of().put(k1, v1);
+    public static HttpHeaders of(String name1, String value1) {
+        return of().put(name1, value1);
     }
 
-    public static HttpHeaders of(String k1, String v1, String k2, String v2) {
-        return of().put(k1, v1).put(k2, v2);
+    public static HttpHeaders of(String name1, String value1, String name2, String value2) {
+        return of().put(name1, value1).put(name2, value2);
     }
 
-    public static HttpHeaders of(String k1, String v1, String k2, String v2, String k3, String v3) {
-        return of().put(k1, v1).put(k2, v2).put(k3, v3);
+    public static HttpHeaders of(String name1, String value1, String name2, String value2,
+                                 String name3, String value3) {
+        return of().put(name1, value1).put(name2, value2).put(name3, value3);
     }
 
-    public static HttpHeaders of(String k1, String v1, String k2, String v2, String k3, String v3,
-                                 String k4, String v4) {
-        return of().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4);
+    public static HttpHeaders of(String name1, String value1, String name2, String value2,
+                                 String name3, String value3, String name4, String value4) {
+        return of().put(name1, value1).put(name2, value2).put(name3, value3).put(name4, value4);
     }
 
-    public static HttpHeaders of(String k1, String v1, String k2, String v2, String k3, String v3,
-                                 String k4, String v4, String k5, String v5) {
-        return of().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5);
+    public static HttpHeaders of(String name1, String value1, String name2, String value2,
+                                 String name3, String value3, String name4, String value4,
+                                 String name5, String value5) {
+        return of().put(name1, value1).put(name2, value2).put(name3, value3).put(name4, value4)
+                   .put(name5, value5);
     }
 
     public static HttpHeaders of(Map<String, String> map) {
@@ -56,10 +62,10 @@ public class HttpHeaders implements HttpObject {
         return of().putAll(nettyHeaders);
     }
 
-    public HttpHeaders put(String key, String value) {
-        requireNonNull(key, "key");
+    public HttpHeaders put(String name, String value) {
+        requireNonNull(name, "name");
         requireNonNull(value, "value");
-        multimap.put(key, value);
+        multimap.put(name, value);
         return this;
     }
 
@@ -85,21 +91,35 @@ public class HttpHeaders implements HttpObject {
         return this;
     }
 
-    public final List<String> get(String key) {
-        requireNonNull(key, "key");
-        return List.copyOf(multimap.get(key));
+    public final List<String> get(String name) {
+        requireNonNull(name, "name");
+        return List.copyOf(multimap.get(name));
     }
 
-    public HttpHeaders remove(String key, String value) {
-        requireNonNull(key, "key");
+    public final boolean containsValue(String name, String value, boolean ignoreCase) {
+        requireNonNull(name, "name");
         requireNonNull(value, "value");
-        multimap.remove(key, value);
+        final var iterator = multimap.get(name).iterator();
+        while (iterator.hasNext()) {
+            for (var value0 : COMMA_SPLITTER.split(iterator.next())) {
+                if (ignoreCase ? value.equalsIgnoreCase(value0) : value.equals(value0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public HttpHeaders remove(String name, String value) {
+        requireNonNull(name, "name");
+        requireNonNull(value, "value");
+        multimap.remove(name, value);
         return this;
     }
 
-    public HttpHeaders removeAll(String key) {
-        requireNonNull(key, "key");
-        multimap.removeAll(key);
+    public HttpHeaders removeAll(String name) {
+        requireNonNull(name, "name");
+        multimap.removeAll(name);
         return this;
     }
 
@@ -109,8 +129,8 @@ public class HttpHeaders implements HttpObject {
 
     public final io.netty.handler.codec.http.HttpHeaders asNettyHeaders() {
         final var nettyHeaders = new DefaultHttpHeaders();
-        for (var key : multimap.keys()) {
-            nettyHeaders.set(key, multimap.get(key));
+        for (var name : multimap.keys()) {
+            nettyHeaders.set(name, multimap.get(name));
         }
         return nettyHeaders;
     }

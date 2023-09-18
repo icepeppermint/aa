@@ -34,8 +34,8 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     @Override
-    public ResponseHeaders put(String key, String value) {
-        return (ResponseHeaders) super.put(key, value);
+    public ResponseHeaders put(String name, String value) {
+        return (ResponseHeaders) super.put(name, value);
     }
 
     @Override
@@ -44,8 +44,8 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     @Override
-    public ResponseHeaders removeAll(String key) {
-        return (ResponseHeaders) super.removeAll(key);
+    public ResponseHeaders removeAll(String name) {
+        return (ResponseHeaders) super.removeAll(name);
     }
 
     public HttpStatus status() {

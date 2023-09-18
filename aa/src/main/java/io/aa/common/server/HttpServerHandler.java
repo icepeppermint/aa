@@ -4,18 +4,19 @@ import static java.util.Objects.requireNonNull;
 
 import javax.annotation.Nullable;
 
+import io.aa.common.HttpData;
+import io.aa.common.HttpHeaders;
+import io.aa.common.HttpMethod;
+import io.aa.common.HttpRequestWriter;
+import io.aa.common.HttpVersion;
+import io.aa.common.RequestHeaders;
+import io.aa.common.util.ChunkUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
-import io.aa.common.HttpData;
-import io.aa.common.HttpHeaders;
-import io.aa.common.HttpMethod;
-import io.aa.common.HttpRequestWriter;
-import io.aa.common.RequestHeaders;
-import io.aa.common.util.ChunkUtil;
 
 final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -31,7 +32,8 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
             req = io.aa.common.HttpRequest.streaming(
-                    RequestHeaders.of(new HttpMethod(nettyReq.method().name()), nettyReq.uri())
+                    RequestHeaders.of(HttpVersion.valueOf(nettyReq.protocolVersion().toString()),
+                                      new HttpMethod(nettyReq.method().name()), nettyReq.uri())
                                   .putAll(nettyReq.headers()));
             final var reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
             final var service = route.get(req.headers());
