@@ -44,6 +44,22 @@ public final class HttpMethod {
 
     public static HttpMethod valueOf(String name) {
         requireNonNull(name, "name");
+        // fast-path
+        if (name == GET_STRING) {
+            return GET;
+        }
+        if (name == POST_STRING) {
+            return POST;
+        }
+        if (name == PUT_STRING) {
+            return PUT;
+        }
+        if (name == PATCH_STRING) {
+            return PATCH;
+        }
+        if (name == DELETE_STRING) {
+            return DELETE;
+        }
         return KNOWN_METHODS.get(name);
     }
 
