@@ -2,35 +2,35 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import javax.annotation.Nullable;
-
 public final class ResponseHeaders extends HttpHeaders {
 
     private final HttpVersion protocolVersion;
     private final HttpStatus status;
-    @Nullable
     private final MediaType contentType;
 
-    private ResponseHeaders(HttpStatus status, @Nullable MediaType contentType) {
+    private ResponseHeaders(HttpStatus status) {
+        this(status, DEFAULT_MEDIA_TYPE);
+    }
+
+    private ResponseHeaders(HttpStatus status, MediaType contentType) {
         this(DEFAULT_HTTP_VERSION, status, contentType);
     }
 
-    private ResponseHeaders(HttpVersion protocolVersion, HttpStatus status, @Nullable MediaType contentType) {
+    private ResponseHeaders(HttpVersion protocolVersion, HttpStatus status, MediaType contentType) {
         this.protocolVersion = requireNonNull(protocolVersion, "protocolVersion");
         this.status = requireNonNull(status, "status");
-        this.contentType = contentType;
+        this.contentType = requireNonNull(contentType, "contentType");
     }
 
     public static ResponseHeaders of(HttpStatus status) {
-        return new ResponseHeaders(status, null);
+        return new ResponseHeaders(status);
     }
 
     public static ResponseHeaders of(int statusCode) {
-        return of(HttpStatus.valueOf(statusCode), null);
+        return of(HttpStatus.valueOf(statusCode));
     }
 
     public static ResponseHeaders of(HttpStatus status, MediaType contentType) {
-        requireNonNull(contentType, "contentType");
         return new ResponseHeaders(status, contentType);
     }
 
@@ -39,7 +39,6 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     public static ResponseHeaders of(HttpVersion protocolVersion, HttpStatus status, MediaType contentType) {
-        requireNonNull(contentType, "contentType");
         return new ResponseHeaders(protocolVersion, status, contentType);
     }
 
@@ -74,7 +73,6 @@ public final class ResponseHeaders extends HttpHeaders {
         return status.code();
     }
 
-    @Nullable
     public MediaType contentType() {
         return contentType;
     }
