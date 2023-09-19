@@ -47,7 +47,11 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
         }
         if (msg instanceof HttpContent nettyBody) {
             assert req != null;
-            req.write(HttpData.of(ChunkUtil.fromChunk(nettyBody.content())));
+            var content = nettyBody.content();
+            if (io.aa.common.util.HttpUtil.isTransferEncodingChunked(req.headers())) {
+                content = ChunkUtil.fromChunk(content);
+            }
+            req.write(HttpData.of(content));
             if (msg instanceof LastHttpContent nettyTrailer) {
                 req.write(HttpHeaders.of(nettyTrailer.trailingHeaders()));
                 req.close();
