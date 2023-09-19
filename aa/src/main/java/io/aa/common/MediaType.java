@@ -21,29 +21,29 @@ public final class MediaType {
 
     private static final String WILDCARD = "*";
 
-    public static final MediaType ANY_TYPE = createConstant(WILDCARD, WILDCARD);
-    public static final MediaType ANY_TEXT_TYPE = createConstant(TEXT_TYPE, WILDCARD);
-    public static final MediaType ANY_IMAGE_TYPE = createConstant(IMAGE_TYPE, WILDCARD);
-    public static final MediaType ANY_AUDIO_TYPE = createConstant(AUDIO_TYPE, WILDCARD);
-    public static final MediaType ANY_VIDEO_TYPE = createConstant(VIDEO_TYPE, WILDCARD);
-    public static final MediaType ANY_APPLICATION_TYPE = createConstant(APPLICATION_TYPE, WILDCARD);
-    public static final MediaType ANY_FONT_TYPE = createConstant(FONT_TYPE, WILDCARD);
+    public static final MediaType ANY_TYPE = newConstant(WILDCARD, WILDCARD);
+    public static final MediaType ANY_TEXT_TYPE = newConstant(TEXT_TYPE, WILDCARD);
+    public static final MediaType ANY_IMAGE_TYPE = newConstant(IMAGE_TYPE, WILDCARD);
+    public static final MediaType ANY_AUDIO_TYPE = newConstant(AUDIO_TYPE, WILDCARD);
+    public static final MediaType ANY_VIDEO_TYPE = newConstant(VIDEO_TYPE, WILDCARD);
+    public static final MediaType ANY_APPLICATION_TYPE = newConstant(APPLICATION_TYPE, WILDCARD);
+    public static final MediaType ANY_FONT_TYPE = newConstant(FONT_TYPE, WILDCARD);
 
-    public static final MediaType CSS_UTF_8 = createConstantUtf8(TEXT_TYPE, "css");
-    public static final MediaType CSV_UTF_8 = createConstantUtf8(TEXT_TYPE, "csv");
-    public static final MediaType HTML_UTF_8 = createConstantUtf8(TEXT_TYPE, "html");
-    public static final MediaType PLAIN_TEXT_UTF_8 = createConstantUtf8(TEXT_TYPE, "plain");
-    public static final MediaType JSON_UTF_8 = createConstantUtf8(APPLICATION_TYPE, "json");
+    public static final MediaType CSS_UTF_8 = newConstantUtf8(TEXT_TYPE, "css");
+    public static final MediaType CSV_UTF_8 = newConstantUtf8(TEXT_TYPE, "csv");
+    public static final MediaType HTML_UTF_8 = newConstantUtf8(TEXT_TYPE, "html");
+    public static final MediaType PLAIN_TEXT_UTF_8 = newConstantUtf8(TEXT_TYPE, "plain");
+    public static final MediaType JSON_UTF_8 = newConstantUtf8(APPLICATION_TYPE, "json");
 
     private final String type;
     private final String subtype;
     private final ImmutableListMultimap<String, String> parameters;
 
-    private static MediaType createConstant(String type, String subtype) {
+    private static MediaType newConstant(String type, String subtype) {
         return new MediaType(type, subtype, ImmutableListMultimap.of());
     }
 
-    private static MediaType createConstantUtf8(String type, String subtype) {
+    private static MediaType newConstantUtf8(String type, String subtype) {
         return new MediaType(type, subtype, UTF_8_CONSTANT_PARAMETERS);
     }
 

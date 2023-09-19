@@ -31,7 +31,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
             req = io.aa.common.HttpRequest.streaming(
-                    RequestHeaders.of(new HttpMethod(nettyReq.method().name()), nettyReq.uri())
+                    RequestHeaders.of(HttpMethod.valueOf(nettyReq.method().name()), nettyReq.uri())
                                   .putAll(nettyReq.headers()));
             final var reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
             final var service = route.get(req.headers());
