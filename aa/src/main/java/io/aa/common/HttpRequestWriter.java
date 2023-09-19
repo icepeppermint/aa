@@ -26,4 +26,9 @@ public final class HttpRequestWriter extends AbstractStreamWriter
     public CompletableFuture<AggregatedHttpRequest> aggregate(EventExecutor executor) {
         return (CompletableFuture<AggregatedHttpRequest>) aggregate(this, executor);
     }
+
+    @Override
+    public HttpVersion protocolVersion() {
+        return HttpVersion.HTTP_1_1;
+    }
 }

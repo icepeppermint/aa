@@ -8,7 +8,6 @@ import io.aa.common.HttpData;
 import io.aa.common.HttpHeaders;
 import io.aa.common.HttpMethod;
 import io.aa.common.HttpRequestWriter;
-import io.aa.common.HttpVersion;
 import io.aa.common.RequestHeaders;
 import io.aa.common.util.ChunkUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,8 +31,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
             req = io.aa.common.HttpRequest.streaming(
-                    RequestHeaders.of(HttpVersion.valueOf(nettyReq.protocolVersion().toString()),
-                                      new HttpMethod(nettyReq.method().name()), nettyReq.uri())
+                    RequestHeaders.of(new HttpMethod(nettyReq.method().name()), nettyReq.uri())
                                   .putAll(nettyReq.headers()));
             final var reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
             final var service = route.get(req.headers());
@@ -44,7 +42,8 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
                 return;
             }
             final var res = service.serve(reqCtx, req);
-            res.subscribe(new HttpResponseSubscriber(ctx, HttpUtil.isKeepAlive(nettyReq)), reqCtx.eventLoop());
+            res.subscribe(new HttpResponseSubscriber(res, ctx, HttpUtil.isKeepAlive(nettyReq)),
+                          reqCtx.eventLoop());
         }
         if (msg instanceof HttpContent nettyBody) {
             assert req != null;

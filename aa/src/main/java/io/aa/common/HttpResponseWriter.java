@@ -12,4 +12,9 @@ public final class HttpResponseWriter extends AbstractStreamWriter
     public CompletableFuture<AggregatedHttpResponse> aggregate(EventExecutor executor) {
         return (CompletableFuture<AggregatedHttpResponse>) aggregate(this, executor);
     }
+
+    @Override
+    public HttpVersion protocolVersion() {
+        return HttpVersion.HTTP_1_1;
+    }
 }

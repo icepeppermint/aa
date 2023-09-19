@@ -21,4 +21,9 @@ public final class DefaultHttpRequest extends AbstractHttpMessage
     public RequestHeaders headers() {
         return (RequestHeaders) super.headers();
     }
+
+    @Override
+    public HttpVersion protocolVersion() {
+        return HttpVersion.HTTP_1_1;
+    }
 }

@@ -33,6 +33,11 @@ final class DeferredHttpResponseWriter extends AbstractStreamWriter
         return (CompletableFuture<AggregatedHttpResponse>) aggregate(this, executor);
     }
 
+    @Override
+    public HttpVersion protocolVersion() {
+        return HttpVersion.HTTP_1_1;
+    }
+
     private final class DeferredSubscriber<T extends HttpObject> implements Subscriber<T> {
 
         private Subscription subscription;

@@ -27,11 +27,13 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
 
     private static final String LAST_CHUNK = "0\r\n\r\n";
 
+    private final HttpMessage message;
     private final ChannelHandlerContext ctx;
     private Subscription subscription;
     private boolean needsTrailers;
 
-    protected AbstractHttpMessageSubscriber(ChannelHandlerContext ctx) {
+    protected AbstractHttpMessageSubscriber(HttpMessage message, ChannelHandlerContext ctx) {
+        this.message = requireNonNull(message, "message");
         this.ctx = requireNonNull(ctx, "ctx");
         needsTrailers = true;
     }
@@ -72,9 +74,9 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
         });
     }
 
-    private static io.netty.handler.codec.http.HttpObject onRequestHeaders(RequestHeaders headers) {
+    private io.netty.handler.codec.http.HttpObject onRequestHeaders(RequestHeaders headers) {
         requireNonNull(headers, "headers");
-        final var nettyObj = new DefaultHttpRequest(HttpVersion.valueOf(headers.protocolVersion().toString()),
+        final var nettyObj = new DefaultHttpRequest(HttpVersion.valueOf(message.protocolVersion().toString()),
                                                     HttpMethod.valueOf(headers.method().name()),
                                                     headers.path(), headers.asNettyHeaders());
         HttpUtil.setTransferEncodingChunked(nettyObj, true);
@@ -85,7 +87,7 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
         requireNonNull(headers, "headers");
         checkState(this instanceof HttpResponseSubscriber,
                    "Not an instanceof HttpResponseSubscriber (expected instanceof HttpResponseSubscriber)");
-        final var nettyObj = new DefaultHttpResponse(HttpVersion.valueOf(headers.protocolVersion().toString()),
+        final var nettyObj = new DefaultHttpResponse(HttpVersion.valueOf(message.protocolVersion().toString()),
                                                      HttpResponseStatus.valueOf(headers.statusCode()));
         HttpUtil.setTransferEncodingChunked(nettyObj, true);
         HttpUtil.setKeepAlive(nettyObj, ((HttpResponseSubscriber) this).keepAlive());
