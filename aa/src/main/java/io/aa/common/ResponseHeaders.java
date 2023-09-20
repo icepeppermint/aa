@@ -8,12 +8,12 @@ public final class ResponseHeaders extends HttpHeaders {
     private final MediaType contentType;
 
     private ResponseHeaders(HttpStatus status) {
-        this(status, DEFAULT_MEDIA_TYPE);
+        this(status, MediaType.PLAIN_TEXT_UTF_8);
     }
 
-    private ResponseHeaders(HttpStatus status, MediaType contentType) {
+    private ResponseHeaders(HttpStatus status, MediaType mediaType) {
         this.status = requireNonNull(status, "status");
-        this.contentType = requireNonNull(contentType, "contentType");
+        contentType = requireNonNull(mediaType, "mediaType");
     }
 
     public static ResponseHeaders of(HttpStatus status) {

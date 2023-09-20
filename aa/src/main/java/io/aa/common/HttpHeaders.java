@@ -15,8 +15,6 @@ public class HttpHeaders implements HttpObject {
 
     private static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
 
-    protected static final MediaType DEFAULT_MEDIA_TYPE = MediaType.PLAIN_TEXT_UTF_8;
-
     private final Multimap<String, String> multimap;
 
     protected HttpHeaders() {
