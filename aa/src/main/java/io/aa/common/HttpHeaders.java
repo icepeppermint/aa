@@ -98,6 +98,11 @@ public class HttpHeaders implements HttpObject {
         return List.copyOf(multimap.get(name));
     }
 
+    public final boolean contains(String name) {
+        requireNonNull(name, "name");
+        return multimap.containsKey(name);
+    }
+
     public final boolean containsValue(String name, String value, boolean ignoreCase) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
