@@ -21,6 +21,21 @@ class DefaultHttpRequestTest {
     }
 
     @Test
+    void subscribe() {
+        final var req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
+                                               HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        PublisherVerifier.of(req)
+                         .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
+                         .assertContent("Content")
+                         .assertTrailers(trailers -> {
+                             final var values = trailers.get("a");
+                             assertEquals(1, values.size());
+                             assertEquals("b", values.get(0));
+                         })
+                         .assertComplete();
+    }
+
+    @Test
     void protocolVersion() {
         final var req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
                                                HttpData.empty(), HttpHeaders.of());

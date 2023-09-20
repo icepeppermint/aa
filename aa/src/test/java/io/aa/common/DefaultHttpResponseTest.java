@@ -20,6 +20,21 @@ class DefaultHttpResponseTest {
     }
 
     @Test
+    void subscribe() {
+        final var res = new DefaultHttpResponse(ResponseHeaders.of(200),
+                                                HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        PublisherVerifier.of(res)
+                         .assertResponseHeaders(ResponseHeaders.of(200))
+                         .assertContent("Content")
+                         .assertTrailers(trailers -> {
+                             final var values = trailers.get("a");
+                             assertEquals(1, values.size());
+                             assertEquals("b", values.get(0));
+                         })
+                         .assertComplete();
+    }
+
+    @Test
     void protocolVersion() {
         final var res = new DefaultHttpResponse(ResponseHeaders.of(200),
                                                 HttpData.empty(), HttpHeaders.of());
