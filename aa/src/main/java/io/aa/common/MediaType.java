@@ -71,10 +71,66 @@ public final class MediaType {
     }
 
     public static MediaType parse(String input) {
-        return MediaTypeParser.parse(input);
+        return Parser.parse(input);
     }
 
-    private static final class MediaTypeParser {
+    private String cachedToString;
+
+    @Override
+    public String toString() {
+        String result = cachedToString;
+        if (result == null) {
+            result = As.string(this);
+            cachedToString = result;
+        }
+        return result;
+    }
+
+    private static final class Tokenizer {
+
+        final String input;
+        int position;
+
+        Tokenizer(String input) {
+            this.input = requireNonNull(input, "input");
+            position = 0;
+        }
+
+        String consumeToken(CharMatcher matcher) {
+            requireNonNull(matcher, "matcher");
+            checkState(hasMore());
+            final var start = position;
+            position = matcher.negate().indexIn(input, start);
+            return hasMore() ? input.substring(start, position) : input.substring(start);
+        }
+
+        char consumeChar(CharMatcher matcher) {
+            requireNonNull(matcher, "matcher");
+            checkState(hasMore());
+            final var c = previewChar();
+            checkState(matcher.matches(c));
+            position++;
+            return c;
+        }
+
+        char consumeChar(char c) {
+            checkState(hasMore());
+            checkState(previewChar() == c);
+            position++;
+            return c;
+        }
+
+        char previewChar() {
+            checkState(hasMore());
+            return input.charAt(position);
+        }
+
+        boolean hasMore() {
+            return position >= 0 && position < input.length();
+        }
+    }
+
+    private static final class Parser {
 
         static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
                                                         .and(CharMatcher.isNot(' '))
@@ -142,63 +198,7 @@ public final class MediaType {
         }
     }
 
-    private static final class Tokenizer {
-
-        final String input;
-        int position;
-
-        Tokenizer(String input) {
-            this.input = requireNonNull(input, "input");
-            position = 0;
-        }
-
-        String consumeToken(CharMatcher matcher) {
-            requireNonNull(matcher, "matcher");
-            checkState(hasMore());
-            final var start = position;
-            position = matcher.negate().indexIn(input, start);
-            return hasMore() ? input.substring(start, position) : input.substring(start);
-        }
-
-        char consumeChar(CharMatcher matcher) {
-            requireNonNull(matcher, "matcher");
-            checkState(hasMore());
-            final var c = previewChar();
-            checkState(matcher.matches(c));
-            position++;
-            return c;
-        }
-
-        char consumeChar(char c) {
-            checkState(hasMore());
-            checkState(previewChar() == c);
-            position++;
-            return c;
-        }
-
-        char previewChar() {
-            checkState(hasMore());
-            return input.charAt(position);
-        }
-
-        boolean hasMore() {
-            return position >= 0 && position < input.length();
-        }
-    }
-
-    private String cachedToString;
-
-    @Override
-    public String toString() {
-        String result = cachedToString;
-        if (result == null) {
-            result = MediaTypeAs.string(this);
-            cachedToString = result;
-        }
-        return result;
-    }
-
-    private static final class MediaTypeAs {
+    private static final class As {
 
         static final MapJoiner PARAMETER_JOINER = Joiner.on("; ").withKeyValueSeparator('=');
 
@@ -219,12 +219,12 @@ public final class MediaType {
             requireNonNull(parameters, "parameters");
             builder.append("; ");
             PARAMETER_JOINER.appendTo(builder, transformValues(parameters,
-                                                               MediaTypeAs::escapeAndQuoteIfNeeded).entries());
+                                                               As::escapeAndQuoteIfNeeded).entries());
         }
 
         static String escapeAndQuoteIfNeeded(String value) {
             requireNonNull(value, "value");
-            if (!value.isEmpty() && MediaTypeParser.TOKEN_MATCHER.matchesAllOf(value)) {
+            if (!value.isEmpty() && Parser.TOKEN_MATCHER.matchesAllOf(value)) {
                 return value;
             } else {
                 return escapeAndQuote(value);
