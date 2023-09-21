@@ -1,9 +1,11 @@
 package io.aa.common;
 
+import static com.google.common.base.CharMatcher.ascii;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Multimap;
 
 public final class MediaType {
 
@@ -61,7 +63,123 @@ public final class MediaType {
         return subtype;
     }
 
-    public Multimap<String, String> parameters() {
+    public ImmutableListMultimap<String, String> parameters() {
         return parameters;
+    }
+
+    public static MediaType parse(String input) {
+        return MediaTypeParser.parse(input);
+    }
+
+    private static final class MediaTypeParser {
+
+        static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
+                                                        .and(CharMatcher.isNot(' '))
+                                                        .and(CharMatcher.noneOf("()<>@,;:\\\"/[]?="));
+        static final CharMatcher LINEAR_WHITESPACE_MATCHER = CharMatcher.anyOf(" \t\r\n");
+        static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
+
+        static MediaType parse(String input) {
+            final var tokenizer = new Tokenizer(input);
+            try {
+                final var type = tokenizer.consumeToken(TOKEN_MATCHER);
+                tokenizer.consumeChar('/');
+                final var subtype = tokenizer.consumeToken(TOKEN_MATCHER);
+                final var parameters = consumeParameters(tokenizer);
+                return new MediaType(type, subtype, parameters);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Could not parse '" + input + '\'', e);
+            }
+        }
+
+        static ImmutableListMultimap<String, String> consumeParameters(Tokenizer tokenizer) {
+            requireNonNull(tokenizer, "tokenizer");
+            final var parameters = ImmutableListMultimap.<String, String>builder();
+            while (tokenizer.hasMore()) {
+                consumeParameterSeparator(tokenizer);
+                final var attribute = consumeAttributeKey(tokenizer);
+                tokenizer.consumeChar('=');
+                parameters.put(attribute, consumeAttributeValue(tokenizer));
+            }
+            return parameters.build();
+        }
+
+        static void consumeParameterSeparator(Tokenizer tokenizer) {
+            requireNonNull(tokenizer, "tokenizer");
+            tokenizer.consumeToken(LINEAR_WHITESPACE_MATCHER);
+            tokenizer.consumeChar(';');
+            tokenizer.consumeToken(LINEAR_WHITESPACE_MATCHER);
+        }
+
+        static String consumeAttributeKey(Tokenizer tokenizer) {
+            requireNonNull(tokenizer, "tokenizer");
+            return tokenizer.consumeToken(TOKEN_MATCHER);
+        }
+
+        static String consumeAttributeValue(Tokenizer tokenizer) {
+            requireNonNull(tokenizer, "tokenizer");
+            final String value;
+            if ('"' == tokenizer.previewChar()) {
+                tokenizer.consumeChar('"');
+                final var valueBuilder = new StringBuilder();
+                while ('"' != tokenizer.previewChar()) {
+                    if ('\\' == tokenizer.previewChar()) {
+                        tokenizer.consumeChar('\\');
+                        valueBuilder.append(tokenizer.consumeChar(ascii()));
+                    } else {
+                        valueBuilder.append(tokenizer.consumeToken(QUOTED_TEXT_MATCHER));
+                    }
+                }
+                value = valueBuilder.toString();
+                tokenizer.consumeChar('"');
+            } else {
+                value = tokenizer.consumeToken(TOKEN_MATCHER);
+            }
+            return value;
+        }
+    }
+
+    private static final class Tokenizer {
+
+        final String input;
+        int position;
+
+        Tokenizer(String input) {
+            this.input = requireNonNull(input, "input");
+            position = 0;
+        }
+
+        String consumeToken(CharMatcher matcher) {
+            requireNonNull(matcher, "matcher");
+            checkState(hasMore());
+            final var start = position;
+            position = matcher.negate().indexIn(input, start);
+            return hasMore() ? input.substring(start, position) : input.substring(start);
+        }
+
+        char consumeChar(CharMatcher matcher) {
+            requireNonNull(matcher, "matcher");
+            checkState(hasMore());
+            final var c = previewChar();
+            checkState(matcher.matches(c));
+            position++;
+            return c;
+        }
+
+        char consumeChar(char c) {
+            checkState(hasMore());
+            checkState(previewChar() == c);
+            position++;
+            return c;
+        }
+
+        char previewChar() {
+            checkState(hasMore());
+            return input.charAt(position);
+        }
+
+        boolean hasMore() {
+            return position >= 0 && position < input.length();
+        }
     }
 }
