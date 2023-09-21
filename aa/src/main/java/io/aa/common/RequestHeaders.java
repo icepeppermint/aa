@@ -7,13 +7,18 @@ public final class RequestHeaders extends HttpHeaders {
     private final HttpMethod method;
     private final String path;
 
-    private RequestHeaders(HttpMethod method, String path) {
+    private RequestHeaders(HttpMethod method, String path, MediaType mediaType) {
         this.method = requireNonNull(method, "method");
         this.path = requireNonNull(path, "path");
+        put(HttpHeaderNames.CONTENT_TYPE, mediaType.toString());
     }
 
     public static RequestHeaders of(HttpMethod method, String path) {
-        return new RequestHeaders(method, path);
+        return of(method, path, MediaType.PLAIN_TEXT_UTF_8);
+    }
+
+    public static RequestHeaders of(HttpMethod method, String path, MediaType mediaType) {
+        return new RequestHeaders(method, path, mediaType);
     }
 
     @Override

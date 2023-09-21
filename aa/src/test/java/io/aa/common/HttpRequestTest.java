@@ -35,11 +35,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -89,11 +85,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -109,11 +101,7 @@ class HttpRequestTest {
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -252,11 +240,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -277,11 +261,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -302,11 +282,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -329,11 +305,7 @@ class HttpRequestTest {
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -356,11 +328,7 @@ class HttpRequestTest {
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -383,11 +351,7 @@ class HttpRequestTest {
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -410,11 +374,7 @@ class HttpRequestTest {
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -481,11 +441,7 @@ class HttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertError(RuntimeException.class);
     }
 }

@@ -59,11 +59,7 @@ class HttpResponseWriterTest {
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -80,11 +76,7 @@ class HttpResponseWriterTest {
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -230,11 +222,7 @@ class HttpResponseWriterTest {
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -256,11 +244,7 @@ class HttpResponseWriterTest {
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -282,11 +266,7 @@ class HttpResponseWriterTest {
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -310,11 +290,7 @@ class HttpResponseWriterTest {
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -338,11 +314,7 @@ class HttpResponseWriterTest {
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -366,11 +338,7 @@ class HttpResponseWriterTest {
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 
@@ -394,11 +362,7 @@ class HttpResponseWriterTest {
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content1")
                          .assertContent("Content2")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 

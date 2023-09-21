@@ -27,11 +27,7 @@ class DefaultHttpRequestTest {
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 

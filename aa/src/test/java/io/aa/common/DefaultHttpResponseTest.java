@@ -14,7 +14,6 @@ class DefaultHttpResponseTest {
                                                 HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
         final var aggregated = res.aggregate().join();
         assertEquals(200, aggregated.statusCode());
-        assertTrue(aggregated.headers().isEmpty());
         assertEquals("Content", aggregated.contentUtf8());
         assertTrue(aggregated.trailers().contains("a"));
     }
@@ -26,11 +25,7 @@ class DefaultHttpResponseTest {
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.get(0));
-                         })
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")))
                          .assertComplete();
     }
 

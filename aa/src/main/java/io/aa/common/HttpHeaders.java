@@ -2,9 +2,11 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -13,7 +15,8 @@ import io.netty.handler.codec.http.DefaultHttpHeaders;
 
 public class HttpHeaders implements HttpObject {
 
-    private static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
+    private static final Splitter VALUES_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
+    private static final Joiner VALUES_JOINER = Joiner.on(", ").skipNulls();
 
     private final Multimap<String, String> multimap;
 
@@ -91,9 +94,14 @@ public class HttpHeaders implements HttpObject {
         return this;
     }
 
-    public final List<String> get(String name) {
+    @Nullable
+    public final String get(String name) {
         requireNonNull(name, "name");
-        return List.copyOf(multimap.get(name));
+        final var values = multimap.get(name);
+        if (values.isEmpty()) {
+            return null;
+        }
+        return VALUES_JOINER.join(values);
     }
 
     public final boolean contains(String name) {
@@ -106,7 +114,7 @@ public class HttpHeaders implements HttpObject {
         requireNonNull(value, "value");
         final var iterator = multimap.get(name).iterator();
         while (iterator.hasNext()) {
-            for (var value0 : COMMA_SPLITTER.split(iterator.next())) {
+            for (var value0 : VALUES_SPLITTER.split(iterator.next())) {
                 if (ignoreCase ? value.equalsIgnoreCase(value0) : value.equals(value0)) {
                     return true;
                 }
@@ -115,7 +123,7 @@ public class HttpHeaders implements HttpObject {
         return false;
     }
 
-    public HttpHeaders remove(String name, String value) {
+    public HttpHeaders remove(String name, Object value) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
         multimap.remove(name, value);
@@ -138,5 +146,14 @@ public class HttpHeaders implements HttpObject {
             nettyHeaders.set(name, multimap.get(name));
         }
         return nettyHeaders;
+    }
+
+    @Nullable
+    public final MediaType contentType() {
+        final var object = get(HttpHeaderNames.CONTENT_TYPE);
+        if (object == null) {
+            return null;
+        }
+        return MediaType.parse(object);
     }
 }

@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 public final class ResponseHeaders extends HttpHeaders {
 
     private final HttpStatus status;
-    private final MediaType contentType;
 
     private ResponseHeaders(HttpStatus status) {
         this(status, MediaType.PLAIN_TEXT_UTF_8);
@@ -13,7 +12,7 @@ public final class ResponseHeaders extends HttpHeaders {
 
     private ResponseHeaders(HttpStatus status, MediaType mediaType) {
         this.status = requireNonNull(status, "status");
-        contentType = requireNonNull(mediaType, "mediaType");
+        put(HttpHeaderNames.CONTENT_TYPE, mediaType.toString());
     }
 
     public static ResponseHeaders of(HttpStatus status) {
@@ -53,9 +52,5 @@ public final class ResponseHeaders extends HttpHeaders {
 
     public int statusCode() {
         return status.code();
-    }
-
-    public MediaType contentType() {
-        return contentType;
     }
 }

@@ -14,6 +14,10 @@ public interface HttpRequest extends HttpMessage {
         return streaming(RequestHeaders.of(method, path));
     }
 
+    static HttpRequestWriter streaming(HttpMethod method, String path, MediaType mediaType) {
+        return streaming(RequestHeaders.of(method, path, mediaType));
+    }
+
     static HttpRequest of(RequestHeaders headers) {
         return of(headers, HttpData.empty());
     }
@@ -47,31 +51,34 @@ public interface HttpRequest extends HttpMessage {
     }
 
     static HttpRequest of(HttpMethod method, String path) {
-        return of(method, path, HttpData.empty(), HttpHeaders.of());
+        return of(RequestHeaders.of(method, path), HttpData.empty(), HttpHeaders.of());
     }
 
-    static HttpRequest of(HttpMethod method, String path, HttpData content) {
-        return of(method, path, content, HttpHeaders.of());
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, HttpData content) {
+        return of(RequestHeaders.of(method, path, mediaType), content, HttpHeaders.of());
     }
 
-    static HttpRequest of(HttpMethod method, String path, String content) {
-        return of(method, path, HttpData.ofUtf8(content), HttpHeaders.of());
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, String content) {
+        return of(RequestHeaders.of(method, path, mediaType), HttpData.ofUtf8(content), HttpHeaders.of());
     }
 
-    static HttpRequest of(HttpMethod method, String path, byte[] content) {
-        return of(method, path, HttpData.of(content), HttpHeaders.of());
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, byte[] content) {
+        return of(RequestHeaders.of(method, path, mediaType), HttpData.of(content), HttpHeaders.of());
     }
 
-    static HttpRequest of(HttpMethod method, String path, HttpData content, HttpHeaders trailers) {
-        return of(RequestHeaders.of(method, path), content, trailers);
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, HttpData content,
+                          HttpHeaders trailers) {
+        return of(RequestHeaders.of(method, path, mediaType), content, trailers);
     }
 
-    static HttpRequest of(HttpMethod method, String path, String content, HttpHeaders trailers) {
-        return of(RequestHeaders.of(method, path), content, trailers);
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, String content,
+                          HttpHeaders trailers) {
+        return of(RequestHeaders.of(method, path, mediaType), content, trailers);
     }
 
-    static HttpRequest of(HttpMethod method, String path, byte[] content, HttpHeaders trailers) {
-        return of(RequestHeaders.of(method, path), content, trailers);
+    static HttpRequest of(HttpMethod method, String path, MediaType mediaType, byte[] content,
+                          HttpHeaders trailers) {
+        return of(RequestHeaders.of(method, path, mediaType), content, trailers);
     }
 
     static HttpRequest of(HttpMethod method, String path, HttpHeaders trailers) {

@@ -62,11 +62,7 @@ class PublisherVerifierTest {
                                              HttpHeaders.of(Map.of("a", "b")));
         PublisherVerifier.of(publisher)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
-                         .assertTrailers(trailers -> {
-                             final var values = trailers.get("a");
-                             assertEquals(1, values.size());
-                             assertEquals("b", values.iterator().next());
-                         });
+                         .assertTrailers(trailers -> assertEquals("b", trailers.get("a")));
     }
 
     @Test
