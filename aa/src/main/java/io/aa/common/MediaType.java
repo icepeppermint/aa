@@ -70,63 +70,6 @@ public final class MediaType {
         return parameters;
     }
 
-    private String cachedToString;
-
-    @Override
-    public String toString() {
-        String result = cachedToString;
-        if (result == null) {
-            result = computeToString();
-            cachedToString = result;
-        }
-        return result;
-    }
-
-    private static final MapJoiner PARAMETER_JOINER = Joiner.on("; ").withKeyValueSeparator('=');
-
-    private String computeToString() {
-        final var builder = new StringBuilder().append(type).append('/').append(subtype);
-        if (!parameters.isEmpty()) {
-            appendParameters(builder);
-        }
-        return builder.toString();
-    }
-
-    private void appendParameters(StringBuilder builder) {
-        requireNonNull(builder, "builder");
-        builder.append("; ");
-        PARAMETER_JOINER.appendTo(builder, transformValues(parameters,
-                                                           MediaType::escapeAndQuoteIfNeeded).entries());
-    }
-
-    private static String escapeAndQuoteIfNeeded(String value) {
-        requireNonNull(value, "value");
-        if (!value.isEmpty() && MediaTypeParser.TOKEN_MATCHER.matchesAllOf(value)) {
-            return value;
-        } else {
-            return escapeAndQuote(value);
-        }
-    }
-
-    private static String escapeAndQuote(String value) {
-        requireNonNull(value, "value");
-        final var quoted = new StringBuilder(value.length() + 16).append('"');
-        appendEscaped(quoted, value);
-        return quoted.append('"').toString();
-    }
-
-    private static void appendEscaped(StringBuilder builder, String value) {
-        requireNonNull(builder, "builder");
-        requireNonNull(value, "value");
-        for (int i = 0; i < value.length(); i++) {
-            final var ch = value.charAt(i);
-            if (ch == '"' || ch == '\\' || ch == '\r') {
-                builder.append('\\');
-            }
-            builder.append(ch);
-        }
-    }
-
     public static MediaType parse(String input) {
         return MediaTypeParser.parse(input);
     }
@@ -240,6 +183,71 @@ public final class MediaType {
 
         boolean hasMore() {
             return position >= 0 && position < input.length();
+        }
+    }
+
+    private String cachedToString;
+
+    @Override
+    public String toString() {
+        String result = cachedToString;
+        if (result == null) {
+            result = MediaTypeAs.string(this);
+            cachedToString = result;
+        }
+        return result;
+    }
+
+    private static final class MediaTypeAs {
+
+        static final MapJoiner PARAMETER_JOINER = Joiner.on("; ").withKeyValueSeparator('=');
+
+        static String string(MediaType mediaType) {
+            requireNonNull(mediaType, "mediaType");
+            final var builder = new StringBuilder().append(mediaType.type())
+                                                   .append('/')
+                                                   .append(mediaType.subtype());
+            final var parameters = mediaType.parameters();
+            if (!parameters.isEmpty()) {
+                appendParameters(builder, parameters);
+            }
+            return builder.toString();
+        }
+
+        static void appendParameters(StringBuilder builder, ImmutableListMultimap<String, String> parameters) {
+            requireNonNull(builder, "builder");
+            requireNonNull(parameters, "parameters");
+            builder.append("; ");
+            PARAMETER_JOINER.appendTo(builder, transformValues(parameters,
+                                                               MediaTypeAs::escapeAndQuoteIfNeeded).entries());
+        }
+
+        static String escapeAndQuoteIfNeeded(String value) {
+            requireNonNull(value, "value");
+            if (!value.isEmpty() && MediaTypeParser.TOKEN_MATCHER.matchesAllOf(value)) {
+                return value;
+            } else {
+                return escapeAndQuote(value);
+            }
+        }
+
+        static String escapeAndQuote(String value) {
+            requireNonNull(value, "value");
+            final var quoted = new StringBuilder(value.length() + 16).append('"');
+            appendEscaped(quoted, value);
+            return quoted.append('"').toString();
+        }
+
+        static void appendEscaped(StringBuilder builder, String value) {
+            requireNonNull(builder, "builder");
+            requireNonNull(value, "value");
+            for (int i = 0; i < value.length(); i++) {
+                final var c = value.charAt(i);
+                if (c == '"' || c == '\\' || c == '\r') {
+                    builder.append('\\');
+                }
+                builder.append(c);
+            }
         }
     }
 }
