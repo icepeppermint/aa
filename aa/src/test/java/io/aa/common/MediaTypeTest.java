@@ -23,4 +23,15 @@ class MediaTypeTest {
         assertEquals("application/soap+xml", parameters.get("start-info").get(0));
         assertEquals("----=_Part_1_701508.1145579811786", parameters.get("boundary").get(0));
     }
+
+    @Test
+    void _toString() {
+        final var input = "multipart/related"
+                          + "; type=\"application/xop+xml\""
+                          + "; start=\"<rootpart@here.com>\""
+                          + "; start-info=\"application/soap+xml\""
+                          + "; boundary=\"----=_Part_1_701508.1145579811786\"";
+        final var parsed = MediaType.parse(input);
+        assertEquals(input, parsed.toString());
+    }
 }

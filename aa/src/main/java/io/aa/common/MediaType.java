@@ -2,9 +2,12 @@ package io.aa.common;
 
 import static com.google.common.base.CharMatcher.ascii;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Multimaps.transformValues;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.collect.ImmutableListMultimap;
 
 public final class MediaType {
@@ -65,6 +68,63 @@ public final class MediaType {
 
     public ImmutableListMultimap<String, String> parameters() {
         return parameters;
+    }
+
+    private String cachedToString;
+
+    @Override
+    public String toString() {
+        String result = cachedToString;
+        if (result == null) {
+            result = computeToString();
+            cachedToString = result;
+        }
+        return result;
+    }
+
+    private static final MapJoiner PARAMETER_JOINER = Joiner.on("; ").withKeyValueSeparator('=');
+
+    private String computeToString() {
+        final var builder = new StringBuilder().append(type).append('/').append(subtype);
+        if (!parameters.isEmpty()) {
+            appendParameters(builder);
+        }
+        return builder.toString();
+    }
+
+    private void appendParameters(StringBuilder builder) {
+        requireNonNull(builder, "builder");
+        builder.append("; ");
+        PARAMETER_JOINER.appendTo(builder, transformValues(parameters,
+                                                           MediaType::escapeAndQuoteIfNeeded).entries());
+    }
+
+    private static String escapeAndQuoteIfNeeded(String value) {
+        requireNonNull(value, "value");
+        if (!value.isEmpty() && MediaTypeParser.TOKEN_MATCHER.matchesAllOf(value)) {
+            return value;
+        } else {
+            return escapeAndQuote(value);
+        }
+    }
+
+    private static String escapeAndQuote(String value) {
+        requireNonNull(value, "value");
+        final var quoted = new StringBuilder(value.length() + 16).append('"');
+        appendEscaped(quoted, value);
+        return quoted.append('"').toString();
+    }
+
+    private static void appendEscaped(StringBuilder builder, String value) {
+        requireNonNull(builder, "builder");
+        requireNonNull(value, "value");
+        for (int i = 0; i < value.length(); i++) {
+            final var ch = value.charAt(i);
+            if (ch == '"' || ch == '\\' || ch == '\r') {
+                builder.append('\\');
+            }
+            builder.append(ch);
+        }
     }
 
     public static MediaType parse(String input) {
