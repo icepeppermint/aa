@@ -183,7 +183,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
         private static boolean shouldSkip(HttpObject object) {
             requireNonNull(object, "object");
             return (object instanceof HttpData httpData && httpData.isEmpty()) ||
-                   (HttpHeaders.class.equals(object.getClass()) && ((HttpHeaders) object).isEmpty());
+                   (object instanceof HttpHeaders httpHeaders && httpHeaders.isEmpty());
         }
 
         private void process(HttpObject object) {

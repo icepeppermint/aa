@@ -5,11 +5,9 @@ import static java.util.Objects.requireNonNull;
 import javax.annotation.Nullable;
 
 import io.aa.common.HttpData;
-import io.aa.common.HttpHeaders;
-import io.aa.common.HttpMethod;
 import io.aa.common.HttpRequestWriter;
-import io.aa.common.RequestHeaders;
 import io.aa.common.util.ChunkUtil;
+import io.aa.common.util.NettyAs;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpContent;
@@ -30,9 +28,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
-            req = io.aa.common.HttpRequest.streaming(
-                    RequestHeaders.of(HttpMethod.valueOf(nettyReq.method().name()), nettyReq.uri())
-                                  .putAll(nettyReq.headers()));
+            req = io.aa.common.HttpRequest.streaming(NettyAs.requestHeaders(nettyReq));
             final var reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
             final var service = route.get(req.headers());
             if (service == null) {
@@ -53,7 +49,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
             }
             req.write(HttpData.of(content));
             if (msg instanceof LastHttpContent nettyTrailer) {
-                req.write(HttpHeaders.of(nettyTrailer.trailingHeaders()));
+                req.write(NettyAs.httpHeaders(nettyTrailer.trailingHeaders()));
                 req.close();
                 req = null;
             }

@@ -2,7 +2,9 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ResponseHeaders extends HttpHeaders {
+import com.google.common.collect.Multimap;
+
+public final class ResponseHeaders extends DefaultHttpHeaders {
 
     private final HttpStatus status;
 
@@ -11,8 +13,8 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     private ResponseHeaders(HttpStatus status, MediaType mediaType) {
+        super(mediaType);
         this.status = requireNonNull(status, "status");
-        put(HttpHeaderNames.CONTENT_TYPE, mediaType.toString());
     }
 
     public static ResponseHeaders of(HttpStatus status) {
@@ -37,13 +39,8 @@ public final class ResponseHeaders extends HttpHeaders {
     }
 
     @Override
-    public ResponseHeaders putAll(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
-        return (ResponseHeaders) super.putAll(nettyHeaders);
-    }
-
-    @Override
-    public ResponseHeaders removeAll(String name) {
-        return (ResponseHeaders) super.removeAll(name);
+    public ResponseHeaders putAll(Multimap<String, String> multimap) {
+        return (ResponseHeaders) super.putAll(multimap);
     }
 
     public HttpStatus status() {

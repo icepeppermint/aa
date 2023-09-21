@@ -120,7 +120,7 @@ public final class PublisherVerifier<T> {
 
     public PublisherVerifier<T> assertTrailers(Consumer<HttpHeaders> consumer) {
         requireNonNull(consumer, "consumer");
-        return assertNext0(() -> consumer.accept(expect(nextValue(), HttpHeaders.class)));
+        return assertNext0(() -> consumer.accept(expect(nextValue(), DefaultHttpHeaders.class)));
     }
 
     public void assertComplete() {

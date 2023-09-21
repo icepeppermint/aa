@@ -2,15 +2,17 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-public final class RequestHeaders extends HttpHeaders {
+import com.google.common.collect.Multimap;
+
+public final class RequestHeaders extends DefaultHttpHeaders {
 
     private final HttpMethod method;
     private final String path;
 
     private RequestHeaders(HttpMethod method, String path, MediaType mediaType) {
+        super(mediaType);
         this.method = requireNonNull(method, "method");
         this.path = requireNonNull(path, "path");
-        put(HttpHeaderNames.CONTENT_TYPE, mediaType.toString());
     }
 
     public static RequestHeaders of(HttpMethod method, String path) {
@@ -27,13 +29,8 @@ public final class RequestHeaders extends HttpHeaders {
     }
 
     @Override
-    public RequestHeaders putAll(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
-        return (RequestHeaders) super.putAll(nettyHeaders);
-    }
-
-    @Override
-    public RequestHeaders removeAll(String name) {
-        return (RequestHeaders) super.removeAll(name);
+    public RequestHeaders putAll(Multimap<String, String> multimap) {
+        return (RequestHeaders) super.putAll(multimap);
     }
 
     public HttpMethod method() {

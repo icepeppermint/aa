@@ -3,8 +3,6 @@ package io.aa.common;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -59,7 +57,7 @@ class PublisherVerifierTest {
     @Test
     void assertTrailers() {
         final var publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
-                                             HttpHeaders.of(Map.of("a", "b")));
+                                             HttpHeaders.of("a", "b"));
         PublisherVerifier.of(publisher)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertTrailers(trailers -> assertEquals("b", trailers.get("a")));

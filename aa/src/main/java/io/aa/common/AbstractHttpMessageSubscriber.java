@@ -9,6 +9,7 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import io.aa.common.server.HttpResponseSubscriber;
+import io.aa.common.util.AaAs;
 import io.aa.common.util.ChunkUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -78,7 +79,7 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
         requireNonNull(headers, "headers");
         final var nettyObj = new DefaultHttpRequest(HttpVersion.valueOf(message.protocolVersion().toString()),
                                                     HttpMethod.valueOf(headers.method().name()),
-                                                    headers.path(), headers.asNettyHeaders());
+                                                    headers.path(), AaAs.nettyHttpHeaders(headers));
         HttpUtil.setTransferEncodingChunked(nettyObj, true);
         return nettyObj;
     }
@@ -126,7 +127,7 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
     private static DefaultLastHttpContent nettyTrailers(HttpHeaders trailers) {
         requireNonNull(trailers, "trailers");
         return new DefaultLastHttpContent(Unpooled.copiedBuffer(LAST_CHUNK, StandardCharsets.UTF_8),
-                                          trailers.asNettyHeaders());
+                                          AaAs.nettyHttpHeaders(trailers));
     }
 
     @Override

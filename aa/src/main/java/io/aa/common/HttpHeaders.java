@@ -1,159 +1,80 @@
 package io.aa.common;
 
-import static java.util.Objects.requireNonNull;
+import java.util.Collection;
+import java.util.Map.Entry;
 
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import io.netty.handler.codec.http.DefaultHttpHeaders;
+public interface HttpHeaders extends HttpObject {
 
-public class HttpHeaders implements HttpObject {
-
-    private static final Splitter VALUES_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
-    private static final Joiner VALUES_JOINER = Joiner.on(", ").skipNulls();
-
-    private final Multimap<String, String> multimap;
-
-    protected HttpHeaders() {
-        multimap = ArrayListMultimap.create();
+    static HttpHeaders of() {
+        return builder().build();
     }
 
-    public static HttpHeaders of() {
-        return new HttpHeaders();
+    static HttpHeaders of(String name1, String value1) {
+        return builder().add(name1, value1)
+                        .build();
     }
 
-    public static HttpHeaders of(String name1, String value1) {
-        return of().put(name1, value1);
+    static HttpHeaders of(String name1, String value1, String name2, String value2) {
+        return builder().add(name1, value1)
+                        .add(name2, value2)
+                        .build();
     }
 
-    public static HttpHeaders of(String name1, String value1, String name2, String value2) {
-        return of().put(name1, value1).put(name2, value2);
+    static HttpHeaders of(String name1, String value1, String name2, String value2,
+                          String name3, String value3) {
+        return builder().add(name1, value1)
+                        .add(name2, value2)
+                        .add(name3, value3)
+                        .build();
     }
 
-    public static HttpHeaders of(String name1, String value1, String name2, String value2,
-                                 String name3, String value3) {
-        return of().put(name1, value1).put(name2, value2).put(name3, value3);
+    static HttpHeaders of(String name1, String value1, String name2, String value2,
+                          String name3, String value3, String name4, String value4) {
+        return builder().add(name1, value1)
+                        .add(name2, value2)
+                        .add(name3, value3)
+                        .add(name4, value4)
+                        .build();
     }
 
-    public static HttpHeaders of(String name1, String value1, String name2, String value2,
-                                 String name3, String value3, String name4, String value4) {
-        return of().put(name1, value1).put(name2, value2).put(name3, value3).put(name4, value4);
+    static HttpHeaders of(String name1, String value1, String name2, String value2,
+                          String name3, String value3, String name4, String value4,
+                          String name5, String value5) {
+        return builder().add(name1, value1)
+                        .add(name2, value2)
+                        .add(name3, value3)
+                        .add(name4, value4)
+                        .add(name5, value5)
+                        .build();
     }
 
-    public static HttpHeaders of(String name1, String value1, String name2, String value2,
-                                 String name3, String value3, String name4, String value4,
-                                 String name5, String value5) {
-        return of().put(name1, value1).put(name2, value2).put(name3, value3).put(name4, value4)
-                   .put(name5, value5);
+    static HttpHeaders of(Multimap<String, String> multimap) {
+        return builder().addAll(multimap).build();
     }
 
-    public static HttpHeaders of(Map<String, String> map) {
-        return of().putAll(map);
+    static HttpHeadersBuilder builder() {
+        return new HttpHeadersBuilder();
     }
 
-    public static HttpHeaders of(Multimap<String, String> multimap) {
-        return of().putAll(multimap);
-    }
+    HttpHeaders put(String name, String value);
 
-    public static HttpHeaders of(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
-        return of().putAll(nettyHeaders);
-    }
+    HttpHeaders putAll(Multimap<String, String> multimap);
 
-    public HttpHeaders put(String name, String value) {
-        requireNonNull(name, "name");
-        requireNonNull(value, "value");
-        multimap.put(name, value);
-        return this;
-    }
+    String get(String name);
 
-    public HttpHeaders putAll(Map<String, String> map) {
-        requireNonNull(map, "map");
-        for (var entry : map.entrySet()) {
-            put(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
+    boolean contains(String name);
 
-    public HttpHeaders putAll(Multimap<String, String> multimap) {
-        requireNonNull(multimap, "multimap");
-        this.multimap.putAll(multimap);
-        return this;
-    }
+    boolean containsValue(String name, String value, boolean ignoreCase);
 
-    public HttpHeaders putAll(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
-        requireNonNull(nettyHeaders, "nettyHeaders");
-        for (var nettyHeader : nettyHeaders) {
-            put(nettyHeader.getKey(), nettyHeader.getValue());
-        }
-        return this;
-    }
+    void remove(String name);
 
-    @Nullable
-    public final String get(String name) {
-        requireNonNull(name, "name");
-        final var values = multimap.get(name);
-        if (values.isEmpty()) {
-            return null;
-        }
-        return VALUES_JOINER.join(values);
-    }
+    void remove(String name, String value);
 
-    public final boolean contains(String name) {
-        requireNonNull(name, "name");
-        return multimap.containsKey(name);
-    }
+    void clear();
 
-    public final boolean containsValue(String name, String value, boolean ignoreCase) {
-        requireNonNull(name, "name");
-        requireNonNull(value, "value");
-        final var iterator = multimap.get(name).iterator();
-        while (iterator.hasNext()) {
-            for (var value0 : VALUES_SPLITTER.split(iterator.next())) {
-                if (ignoreCase ? value.equalsIgnoreCase(value0) : value.equals(value0)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    boolean isEmpty();
 
-    public HttpHeaders remove(String name, Object value) {
-        requireNonNull(name, "name");
-        requireNonNull(value, "value");
-        multimap.remove(name, value);
-        return this;
-    }
-
-    public HttpHeaders removeAll(String name) {
-        requireNonNull(name, "name");
-        multimap.removeAll(name);
-        return this;
-    }
-
-    public final boolean isEmpty() {
-        return multimap.isEmpty();
-    }
-
-    public final io.netty.handler.codec.http.HttpHeaders asNettyHeaders() {
-        final var nettyHeaders = new DefaultHttpHeaders();
-        for (var name : multimap.keys()) {
-            nettyHeaders.set(name, multimap.get(name));
-        }
-        return nettyHeaders;
-    }
-
-    @Nullable
-    public final MediaType contentType() {
-        final var object = get(HttpHeaderNames.CONTENT_TYPE);
-        if (object == null) {
-            return null;
-        }
-        return MediaType.parse(object);
-    }
+    Collection<Entry<String, String>> entries();
 }
