@@ -16,8 +16,9 @@ class HttpUtilTest {
 
     @Test
     void isKeepAlive_when_request_headers_contains_connection_close_and_protocol_version_http_1_1() {
-        final var requestHeaders = RequestHeaders.of(HttpMethod.GET, "/")
-                                                 .put(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        final var requestHeaders = RequestHeaders.builder(HttpMethod.GET, "/")
+                                                 .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+                                                 .build();
         assertFalse(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_1));
     }
 
@@ -29,8 +30,9 @@ class HttpUtilTest {
 
     @Test
     void isKeepAlive_when_request_headers_contains_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var requestHeaders = RequestHeaders.of(HttpMethod.GET, "/")
-                                                 .put(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        final var requestHeaders = RequestHeaders.builder(HttpMethod.GET, "/")
+                                                 .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
+                                                 .build();
         assertTrue(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_0));
     }
 
@@ -42,8 +44,9 @@ class HttpUtilTest {
 
     @Test
     void isKeepAlive_when_response_headers_contains_connection_close_and_protocol_version_http_1_1() {
-        final var responseHeaders = ResponseHeaders.of(200)
-                                                   .put(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        final var responseHeaders = ResponseHeaders.builder(200)
+                                                   .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+                                                   .build();
         assertFalse(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_1));
     }
 
@@ -55,9 +58,9 @@ class HttpUtilTest {
 
     @Test
     void isKeepAlive_when_response_headers_contains_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var responseHeaders = ResponseHeaders.of(200)
-                                                   .put(HttpHeaderNames.CONNECTION,
-                                                        HttpHeaderValues.KEEP_ALIVE);
+        final var responseHeaders = ResponseHeaders.builder(200)
+                                                   .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
+                                                   .build();
         assertTrue(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_0));
     }
 
@@ -74,8 +77,9 @@ class HttpUtilTest {
         requestHeaders = RequestHeaders.of(HttpMethod.GET, "/");
         assertFalse(HttpUtil.isTransferEncodingChunked(requestHeaders));
 
-        requestHeaders = RequestHeaders.of(HttpMethod.GET, "/")
-                                       .put(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
+        requestHeaders = RequestHeaders.builder(HttpMethod.GET, "/")
+                                       .add(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED)
+                                       .build();
         assertTrue(HttpUtil.isTransferEncodingChunked(requestHeaders));
     }
 
@@ -86,8 +90,9 @@ class HttpUtilTest {
         responseHeaders = ResponseHeaders.of(200);
         assertFalse(HttpUtil.isTransferEncodingChunked(responseHeaders));
 
-        responseHeaders = ResponseHeaders.of(200)
-                                         .put(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
+        responseHeaders = ResponseHeaders.builder(200)
+                                         .add(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED)
+                                         .build();
         assertTrue(HttpUtil.isTransferEncodingChunked(responseHeaders));
     }
 }

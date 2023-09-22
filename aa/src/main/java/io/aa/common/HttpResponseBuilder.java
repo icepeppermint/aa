@@ -35,6 +35,6 @@ public final class HttpResponseBuilder extends HttpMessageBuilder<HttpResponse> 
 
     @Override
     public HttpResponse build() {
-        return HttpResponse.of(headers, content, trailers);
+        return HttpResponse.of(headers, content(), trailers());
     }
 }

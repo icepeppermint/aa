@@ -35,6 +35,6 @@ public final class HttpRequestBuilder extends HttpMessageBuilder<HttpRequest> {
 
     @Override
     public HttpRequest build() {
-        return HttpRequest.of(headers, content, trailers);
+        return HttpRequest.of(headers, content(), trailers());
     }
 }

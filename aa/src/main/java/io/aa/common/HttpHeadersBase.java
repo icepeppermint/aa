@@ -12,37 +12,33 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-public abstract class HttpHeadersBase implements HttpHeaders {
+abstract class HttpHeadersBase implements HttpHeaderGetters {
 
     private static final Splitter VALUES_SPLITTER = Splitter.on(',').omitEmptyStrings().trimResults();
     private static final Joiner VALUES_JOINER = Joiner.on(", ").skipNulls();
 
-    private final Multimap<String, String> multimap;
+    private final Multimap<String, String> container;
 
-    protected HttpHeadersBase() {
-        multimap = ArrayListMultimap.create();
+    HttpHeadersBase() {
+        container = ArrayListMultimap.create();
     }
 
-    @Override
-    public HttpHeaders put(String name, String value) {
+    public void put(String name, String value) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
-        multimap.put(name, value);
-        return this;
+        container.put(name, value);
     }
 
-    @Override
-    public HttpHeaders putAll(Multimap<String, String> multimap) {
+    public void putAll(Multimap<String, String> multimap) {
         requireNonNull(multimap, "multimap");
-        this.multimap.putAll(multimap);
-        return this;
+        container.putAll(multimap);
     }
 
     @Override
     @Nullable
     public final String get(String name) {
         requireNonNull(name, "name");
-        final var values = multimap.get(name);
+        final var values = container.get(name);
         if (values.isEmpty()) {
             return null;
         }
@@ -52,14 +48,14 @@ public abstract class HttpHeadersBase implements HttpHeaders {
     @Override
     public final boolean contains(String name) {
         requireNonNull(name, "name");
-        return multimap.containsKey(name);
+        return container.containsKey(name);
     }
 
     @Override
     public final boolean containsValue(String name, String value, boolean ignoreCase) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
-        final var iterator = multimap.get(name).iterator();
+        final var iterator = container.get(name).iterator();
         while (iterator.hasNext()) {
             for (var value0 : VALUES_SPLITTER.split(iterator.next())) {
                 if (ignoreCase ? value.equalsIgnoreCase(value0) : value.equals(value0)) {
@@ -70,34 +66,32 @@ public abstract class HttpHeadersBase implements HttpHeaders {
         return false;
     }
 
-    @Override
     public final void remove(String name) {
         requireNonNull(name, "name");
-        multimap.removeAll(name);
+        container.removeAll(name);
     }
 
-    @Override
     public final void remove(String name, String value) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
-        multimap.remove(name, value);
+        container.remove(name, value);
     }
 
-    @Override
     public final void clear() {
-        multimap.clear();
+        container.clear();
     }
 
     @Override
     public final boolean isEmpty() {
-        return multimap.isEmpty();
+        return container.isEmpty();
     }
 
     @Override
     public final Collection<Entry<String, String>> entries() {
-        return multimap.entries();
+        return container.entries();
     }
 
+    @Override
     @Nullable
     public final MediaType contentType() {
         final var contentType = get(HttpHeaderNames.CONTENT_TYPE);
@@ -109,6 +103,6 @@ public abstract class HttpHeadersBase implements HttpHeaders {
 
     public final void contentType(MediaType contentType) {
         requireNonNull(contentType, "contentType");
-        multimap.put(HttpHeaderNames.CONTENT_TYPE, contentType.toString());
+        container.put(HttpHeaderNames.CONTENT_TYPE, contentType.toString());
     }
 }

@@ -1,11 +1,8 @@
 package io.aa.common;
 
-import java.util.Collection;
-import java.util.Map.Entry;
-
 import com.google.common.collect.Multimap;
 
-public interface HttpHeaders extends HttpObject {
+public interface HttpHeaders extends HttpObject, HttpHeaderGetters {
 
     static HttpHeaders of() {
         return builder().build();
@@ -55,26 +52,6 @@ public interface HttpHeaders extends HttpObject {
     }
 
     static HttpHeadersBuilder builder() {
-        return new HttpHeadersBuilder();
+        return new DefaultHttpHeadersBuilder();
     }
-
-    HttpHeaders put(String name, String value);
-
-    HttpHeaders putAll(Multimap<String, String> multimap);
-
-    String get(String name);
-
-    boolean contains(String name);
-
-    boolean containsValue(String name, String value, boolean ignoreCase);
-
-    void remove(String name);
-
-    void remove(String name, String value);
-
-    void clear();
-
-    boolean isEmpty();
-
-    Collection<Entry<String, String>> entries();
 }

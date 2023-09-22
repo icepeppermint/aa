@@ -4,10 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 abstract class HttpMessageBuilder<T extends HttpMessage> {
 
-    protected HttpData content;
-    protected HttpHeaders trailers;
-
-    protected HttpMessageBuilder() {}
+    private HttpData content;
+    private HttpHeaders trailers;
 
     public HttpMessageBuilder<T> content(HttpData content) {
         this.content = requireNonNull(content, "content");
@@ -22,9 +20,17 @@ abstract class HttpMessageBuilder<T extends HttpMessage> {
         return content(HttpData.of(content));
     }
 
+    public final HttpData content() {
+        return content;
+    }
+
     public HttpMessageBuilder<T> trailers(HttpHeaders trailers) {
         this.trailers = requireNonNull(trailers, "trailers");
         return this;
+    }
+
+    public final HttpHeaders trailers() {
+        return trailers;
     }
 
     public abstract T build();

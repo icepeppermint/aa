@@ -2,52 +2,80 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Multimap;
+public interface ResponseHeaders extends HttpHeaders {
 
-public final class ResponseHeaders extends DefaultHttpHeaders {
-
-    private final HttpStatus status;
-
-    private ResponseHeaders(HttpStatus status) {
-        this(status, MediaType.PLAIN_TEXT_UTF_8);
+    static ResponseHeaders of(HttpStatus status) {
+        return builder(status).build();
     }
 
-    private ResponseHeaders(HttpStatus status, MediaType mediaType) {
-        super(mediaType);
-        this.status = requireNonNull(status, "status");
+    static ResponseHeaders of(int statusCode) {
+        return builder(statusCode).build();
     }
 
-    public static ResponseHeaders of(HttpStatus status) {
-        return new ResponseHeaders(status);
+    static ResponseHeaders of(HttpStatus status,
+                              String name1, String value1) {
+        return builder(status).add(name1, value1)
+                              .build();
     }
 
-    public static ResponseHeaders of(int statusCode) {
-        return of(HttpStatus.valueOf(statusCode));
+    static ResponseHeaders of(HttpStatus status,
+                              String name1, String value1,
+                              String name2, String value2) {
+        return builder(status).add(name1, value1)
+                              .add(name2, value2)
+                              .build();
     }
 
-    public static ResponseHeaders of(HttpStatus status, MediaType contentType) {
-        return new ResponseHeaders(status, contentType);
+    static ResponseHeaders of(HttpStatus status,
+                              String name1, String value1,
+                              String name2, String value2,
+                              String name3, String value3) {
+        return builder(status).add(name1, value1)
+                              .add(name2, value2)
+                              .add(name3, value3)
+                              .build();
     }
 
-    public static ResponseHeaders of(int statusCode, MediaType contentType) {
-        return of(HttpStatus.valueOf(statusCode), contentType);
+    static ResponseHeaders of(HttpStatus status,
+                              String name1, String value1,
+                              String name2, String value2,
+                              String name3, String value3,
+                              String name4, String value4) {
+        return builder(status).add(name1, value1)
+                              .add(name2, value2)
+                              .add(name3, value3)
+                              .add(name4, value4)
+                              .build();
     }
 
-    @Override
-    public ResponseHeaders put(String name, String value) {
-        return (ResponseHeaders) super.put(name, value);
+    static ResponseHeaders of(HttpStatus status,
+                              String name1, String value1,
+                              String name2, String value2,
+                              String name3, String value3,
+                              String name4, String value4,
+                              String name5, String value5) {
+        return builder(status).add(name1, value1)
+                              .add(name2, value2)
+                              .add(name3, value3)
+                              .add(name4, value4)
+                              .add(name5, value5)
+                              .build();
     }
 
-    @Override
-    public ResponseHeaders putAll(Multimap<String, String> multimap) {
-        return (ResponseHeaders) super.putAll(multimap);
+    static ResponseHeadersBuilder builder() {
+        return new DefaultResponseHeadersBuilder();
     }
 
-    public HttpStatus status() {
-        return status;
+    static ResponseHeadersBuilder builder(HttpStatus status) {
+        requireNonNull(status, "status");
+        return builder().status(status);
     }
 
-    public int statusCode() {
-        return status.code();
+    static ResponseHeadersBuilder builder(int statusCode) {
+        return builder().statusCode(statusCode);
     }
+
+    HttpStatus status();
+
+    int statusCode();
 }

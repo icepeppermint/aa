@@ -31,15 +31,18 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(MediaType mediaType, HttpData content) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(MediaType mediaType, String content) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(MediaType mediaType, byte[] content) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(HttpData content, HttpHeaders trailers) {
@@ -55,15 +58,18 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(MediaType mediaType, HttpData content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(MediaType mediaType, String content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(MediaType mediaType, byte[] content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(HttpStatus.OK, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.OK, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(HttpStatus status, HttpData content) {
@@ -79,15 +85,18 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, HttpData content) {
-        return of(ResponseHeaders.of(status, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, String content) {
-        return of(ResponseHeaders.of(status, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, byte[] content) {
-        return of(ResponseHeaders.of(status, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(HttpStatus status, HttpData content, HttpHeaders trailers) {
@@ -103,15 +112,18 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, HttpData content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(status, mediaType), content, trailers);
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, String content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(status, mediaType), content, trailers);
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(HttpStatus status, MediaType mediaType, byte[] content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(status, mediaType), content, trailers);
+        return of(ResponseHeaders.of(status, HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(HttpStatus status, HttpHeaders trailers) {
@@ -131,15 +143,21 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, HttpData content) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, String content) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, byte[] content) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, HttpHeaders.of());
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, HttpHeaders.of());
     }
 
     static HttpResponse of(int statusCode, HttpData content, HttpHeaders trailers) {
@@ -155,15 +173,21 @@ public interface HttpResponse extends HttpMessage {
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, HttpData content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, String content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(int statusCode, MediaType mediaType, byte[] content, HttpHeaders trailers) {
-        return of(ResponseHeaders.of(statusCode, mediaType), content, trailers);
+        return of(ResponseHeaders.of(HttpStatus.valueOf(statusCode),
+                                     HttpHeaderNames.CONTENT_TYPE, mediaType.toString()),
+                  content, trailers);
     }
 
     static HttpResponse of(int statusCode, HttpHeaders trailers) {

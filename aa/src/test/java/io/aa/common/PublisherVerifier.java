@@ -195,9 +195,9 @@ public final class PublisherVerifier<T> {
         requireNonNull(value, "value");
         requireNonNull(expected, "expected");
         final var actual = value.getClass();
-        if (!expected.equals(actual)) {
+        if (!expected.isAssignableFrom(actual)) {
             throw new AssertionError("The value is " + actual.getSimpleName() +
-                                     " (expected " + expected.getSimpleName() + ')');
+                                     " (expected instance of " + expected.getSimpleName() + ')');
         }
         return (T) value;
     }

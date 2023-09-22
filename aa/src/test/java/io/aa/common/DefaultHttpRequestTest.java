@@ -1,7 +1,6 @@
 package io.aa.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +15,7 @@ class DefaultHttpRequestTest {
         final var aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
-        assertFalse(aggregated.headers().isEmpty());
+        assertTrue(aggregated.headers().isEmpty());
         assertEquals("Content", aggregated.contentUtf8());
         assertTrue(aggregated.trailers().contains("a"));
     }

@@ -16,13 +16,19 @@ public final class NettyAs {
 
     public static RequestHeaders requestHeaders(HttpRequest nettyReq) {
         requireNonNull(nettyReq, "nettyReq");
-        return RequestHeaders.of(HttpMethod.valueOf(nettyReq.method().name()), nettyReq.uri())
-                             .putAll(multimap(nettyReq.headers()));
+        return RequestHeaders.builder()
+                             .method(HttpMethod.valueOf(nettyReq.method().name()))
+                             .path(nettyReq.uri())
+                             .addAll(multimap(nettyReq.headers()))
+                             .build();
     }
 
     public static ResponseHeaders responseHeaders(HttpResponse nettyRes) {
         requireNonNull(nettyRes, "nettyRes");
-        return ResponseHeaders.of(nettyRes.status().code()).putAll(multimap(nettyRes.headers()));
+        return ResponseHeaders.builder()
+                              .statusCode(nettyRes.status().code())
+                              .addAll(multimap(nettyRes.headers()))
+                              .build();
     }
 
     public static HttpHeaders httpHeaders(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
