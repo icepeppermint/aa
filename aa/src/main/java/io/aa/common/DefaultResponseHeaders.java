@@ -2,14 +2,15 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 final class DefaultResponseHeaders extends DefaultHttpHeaders implements ResponseHeaders {
 
     private final HttpStatus status;
 
-    DefaultResponseHeaders(Multimap<String, String> multimap, HttpStatus status) {
-        super(multimap);
+    DefaultResponseHeaders(Collection<Entry<String, String>> entries, HttpStatus status) {
+        super(entries);
         this.status = requireNonNull(status, "status");
     }
 

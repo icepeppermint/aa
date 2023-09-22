@@ -1,10 +1,11 @@
 package io.aa.common;
 
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 class DefaultHttpHeaders extends HttpHeadersBase implements HttpHeaders {
 
-    DefaultHttpHeaders(Multimap<String, String> multimap) {
-        super(multimap);
+    DefaultHttpHeaders(Collection<Entry<String, String>> entries) {
+        super(entries);
     }
 }

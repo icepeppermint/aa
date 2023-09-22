@@ -2,14 +2,17 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map.Entry;
 
-import com.google.common.collect.Multimap;
+import javax.annotation.Nullable;
 
 class HttpHeadersBase extends StringMultimap implements HttpHeaderGetters {
 
-    HttpHeadersBase(Multimap<String, String> multimap) {
-        add(requireNonNull(multimap, "multimap").entries());
+    HttpHeadersBase() {}
+
+    HttpHeadersBase(Collection<Entry<String, String>> entries) {
+        add(requireNonNull(entries, "entries"));
     }
 
     @Override

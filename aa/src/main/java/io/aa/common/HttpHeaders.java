@@ -1,6 +1,7 @@
 package io.aa.common;
 
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 public interface HttpHeaders extends HttpObject, HttpHeaderGetters {
 
@@ -47,8 +48,8 @@ public interface HttpHeaders extends HttpObject, HttpHeaderGetters {
                         .build();
     }
 
-    static HttpHeaders of(Multimap<String, String> multimap) {
-        return builder().addAll(multimap).build();
+    static HttpHeaders of(Collection<Entry<String, String>> entries) {
+        return builder().add(entries).build();
     }
 
     static HttpHeadersBuilder builder() {

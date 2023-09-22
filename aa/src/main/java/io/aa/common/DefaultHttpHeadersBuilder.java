@@ -4,8 +4,12 @@ public final class DefaultHttpHeadersBuilder
         extends AbstractHttpHeadersBuilder<DefaultHttpHeadersBuilder>
         implements HttpHeadersBuilder {
 
+    DefaultHttpHeadersBuilder() {
+        super(new HttpHeadersBase());
+    }
+
     @Override
     public HttpHeaders build() {
-        return new DefaultHttpHeaders(container());
+        return new DefaultHttpHeaders(entries());
     }
 }

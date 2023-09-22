@@ -2,9 +2,6 @@ package io.aa.common.util;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Multimap;
-
 import io.aa.common.HttpHeaders;
 import io.aa.common.HttpMethod;
 import io.aa.common.RequestHeaders;
@@ -19,7 +16,7 @@ public final class NettyAs {
         return RequestHeaders.builder()
                              .method(HttpMethod.valueOf(nettyReq.method().name()))
                              .path(nettyReq.uri())
-                             .addAll(multimap(nettyReq.headers()))
+                             .add(nettyReq.headers())
                              .build();
     }
 
@@ -27,18 +24,13 @@ public final class NettyAs {
         requireNonNull(nettyRes, "nettyRes");
         return ResponseHeaders.builder()
                               .statusCode(nettyRes.status().code())
-                              .addAll(multimap(nettyRes.headers()))
+                              .add(nettyRes.headers())
                               .build();
     }
 
     public static HttpHeaders httpHeaders(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
         requireNonNull(nettyHeaders, "nettyHeaders");
-        return HttpHeaders.builder().addAll(multimap(nettyHeaders)).build();
-    }
-
-    private static Multimap<String, String> multimap(io.netty.handler.codec.http.HttpHeaders nettyHeaders) {
-        requireNonNull(nettyHeaders, "nettyHeaders");
-        return ImmutableListMultimap.copyOf(nettyHeaders);
+        return HttpHeaders.builder().add(nettyHeaders).build();
     }
 
     private NettyAs() {}

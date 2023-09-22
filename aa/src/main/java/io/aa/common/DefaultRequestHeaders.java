@@ -2,15 +2,16 @@ package io.aa.common;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 final class DefaultRequestHeaders extends DefaultHttpHeaders implements RequestHeaders {
 
     private final HttpMethod method;
     private final String path;
 
-    DefaultRequestHeaders(Multimap<String, String> multimap, HttpMethod method, String path) {
-        super(multimap);
+    DefaultRequestHeaders(Collection<Entry<String, String>> entries, HttpMethod method, String path) {
+        super(entries);
         this.method = requireNonNull(method, "method");
         this.path = requireNonNull(path, "path");
     }

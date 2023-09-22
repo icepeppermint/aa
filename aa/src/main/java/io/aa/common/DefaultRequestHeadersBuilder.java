@@ -9,6 +9,10 @@ public final class DefaultRequestHeadersBuilder
     private HttpMethod method;
     private String path;
 
+    DefaultRequestHeadersBuilder() {
+        super(new HttpHeadersBase());
+    }
+
     @Override
     public RequestHeadersBuilder method(HttpMethod method) {
         this.method = requireNonNull(method, "method");
@@ -23,6 +27,6 @@ public final class DefaultRequestHeadersBuilder
 
     @Override
     public RequestHeaders build() {
-        return new DefaultRequestHeaders(container(), method, path);
+        return new DefaultRequestHeaders(entries(), method, path);
     }
 }

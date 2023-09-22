@@ -8,6 +8,10 @@ public final class DefaultResponseHeadersBuilder
 
     private HttpStatus status;
 
+    DefaultResponseHeadersBuilder() {
+        super(new HttpHeadersBase());
+    }
+
     @Override
     public ResponseHeadersBuilder status(HttpStatus status) {
         this.status = requireNonNull(status, "status");
@@ -22,6 +26,6 @@ public final class DefaultResponseHeadersBuilder
 
     @Override
     public ResponseHeaders build() {
-        return new DefaultResponseHeaders(container(), status);
+        return new DefaultResponseHeaders(entries(), status);
     }
 }
