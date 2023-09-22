@@ -1,19 +1,9 @@
 package io.aa.common;
 
-import java.util.Collection;
-import java.util.Map.Entry;
+import javax.annotation.Nullable;
 
-public interface HttpHeaderGetters {
+interface HttpHeaderGetters extends StringMultimapGetters {
 
-    String get(String name);
-
-    boolean contains(String name);
-
-    boolean containsValue(String name, String value, boolean ignoreCase);
-
-    boolean isEmpty();
-
-    Collection<Entry<String, String>> entries();
-
+    @Nullable
     MediaType contentType();
 }

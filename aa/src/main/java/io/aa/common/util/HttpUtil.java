@@ -12,16 +12,16 @@ public final class HttpUtil {
     public static boolean isKeepAlive(HttpHeaders headers, HttpVersion protocolVersion) {
         requireNonNull(headers, "headers");
         requireNonNull(protocolVersion, "protocolVersion");
-        if (headers.containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)) {
+        if (headers.contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)) {
             return false;
         }
         return protocolVersion.isKeepAliveDefault() ||
-               headers.containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true);
+               headers.contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
     }
 
     public static boolean isTransferEncodingChunked(HttpHeaders headers) {
         requireNonNull(headers, "headers");
-        return headers.containsValue(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED, true);
+        return headers.contains(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
     }
 
     private HttpUtil() {}
