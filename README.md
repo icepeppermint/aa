@@ -1,9 +1,9 @@
 # Aa
 
-**Aa** is a project to understand the internals of [Armeria](https://armeria.dev/).
+**Aa** is a project to learn about the internals of [Armeria](https://armeria.dev/).
 
-It's my study purpose, and it's missing a lot of features provided by common web frameworks.
+Because it is for research purposes, it lacks many of the features provided by typical web frameworks.
 
 Please refer to the examples directory for usage.
 
-**The most important thing is that it must never be used in production.**
+**Most importantly, it should never be used in production.**
