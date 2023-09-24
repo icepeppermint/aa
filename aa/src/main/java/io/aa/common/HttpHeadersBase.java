@@ -24,6 +24,6 @@ class HttpHeadersBase extends StringMultimap implements HttpHeaderGetters {
 
     public final void contentType(MediaType contentType) {
         requireNonNull(contentType, "contentType");
-        add(HttpHeaderNames.CONTENT_TYPE, contentType.toString());
+        set(HttpHeaderNames.CONTENT_TYPE, contentType.toString());
     }
 }
