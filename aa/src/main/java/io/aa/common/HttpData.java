@@ -22,12 +22,12 @@ public final class HttpData implements HttpObject {
         return new HttpData(Unpooled.copiedBuffer(requireNonNull(content, "content")));
     }
 
-    public static HttpData ofUtf8(String content) {
-        return new HttpData(Unpooled.copiedBuffer(requireNonNull(content, "content"), StandardCharsets.UTF_8));
-    }
-
     public static HttpData of(byte[] content) {
         return new HttpData(Unpooled.copiedBuffer(requireNonNull(content, "content")));
+    }
+
+    public static HttpData ofUtf8(String content) {
+        return new HttpData(Unpooled.copiedBuffer(requireNonNull(content, "content"), StandardCharsets.UTF_8));
     }
 
     public static HttpData empty() {
