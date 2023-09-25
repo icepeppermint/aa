@@ -10,7 +10,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_request_with_headers() {
-        final var req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequest req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"));
 
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
@@ -19,7 +19,8 @@ class HttpRequestTest {
 
     @Test
     void subscribe_request_with_headers_content() {
-        final var req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"), HttpData.ofUtf8("Content"));
+        final HttpRequest req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
+                                               HttpData.ofUtf8("Content"));
 
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
@@ -29,8 +30,9 @@ class HttpRequestTest {
 
     @Test
     void subscribe_request_with_headers_content_trailers() {
-        final var req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"), HttpData.ofUtf8("Content"),
-                                       HttpHeaders.of("a", "b"));
+        final HttpRequest req = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
+                                               HttpData.ofUtf8("Content"),
+                                               HttpHeaders.of("a", "b"));
 
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
@@ -41,7 +43,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.close();
 
         PublisherVerifier.of(req)
@@ -51,7 +53,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.close();
 
@@ -63,7 +65,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.close();
@@ -77,7 +79,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_trailers() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of("a", "b"));
         req.close();
@@ -91,7 +93,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_trailers() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of("a", "b"));
@@ -107,7 +109,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -124,7 +126,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -143,7 +145,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_after_content_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -162,7 +164,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -183,7 +185,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_after_content1_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -204,7 +206,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_after_content2_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -225,7 +227,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_trailers_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -246,7 +248,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_trailers_after_content_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -267,7 +269,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_content_trailers_after_trailers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of("a", "b"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -288,7 +290,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_trailers_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -311,7 +313,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_trailers_after_content1_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -334,7 +336,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_trailers_after_content2_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -357,7 +359,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_headers_contents_trailers_after_trailers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of("a", "b"));
@@ -380,7 +382,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_error() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.close(RuntimeException::new);
 
         PublisherVerifier.of(req)
@@ -390,7 +392,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_error_after_headers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -407,7 +409,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_error_after_content_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -426,7 +428,7 @@ class HttpRequestTest {
 
     @Test
     void subscribe_streaming_request_with_error_after_trailers_wrote() {
-        final var req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of("a", "b"));
         Executors.newSingleThreadExecutor().execute(() -> {

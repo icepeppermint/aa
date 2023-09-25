@@ -4,18 +4,20 @@ import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.HttpClientCodec;
 import io.aa.common.HttpData;
 import io.aa.common.HttpHeaders;
 import io.aa.common.HttpMethod;
 import io.aa.common.HttpRequest;
 import io.aa.common.HttpResponse;
+import io.aa.common.HttpResponseWriter;
 import io.aa.common.RequestHeaders;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
 
 public final class HttpClient {
 
@@ -35,14 +37,14 @@ public final class HttpClient {
 
     public HttpResponse execute(HttpRequest req) {
         requireNonNull(req, "req");
-        final var streaming = HttpResponse.streaming();
-        final var bootstrap = new Bootstrap();
+        final HttpResponseWriter streaming = HttpResponse.streaming();
+        final Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(new NioEventLoopGroup(1))
                  .channel(NioSocketChannel.class)
                  .handler(new ChannelInitializer<SocketChannel>() {
                      @Override
                      protected void initChannel(SocketChannel ch) throws Exception {
-                         final var pipeline = ch.pipeline();
+                         final ChannelPipeline pipeline = ch.pipeline();
                          pipeline.addLast(new HttpClientCodec());
                          pipeline.addLast(new HttpClientHandler(
                                  new ClientRequestContext(uri, req, ch.eventLoop()), streaming));

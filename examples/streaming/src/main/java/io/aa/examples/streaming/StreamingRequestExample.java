@@ -26,7 +26,7 @@ public class StreamingRequestExample {
             req.aggregate().thenAccept(new Consumer<AggregatedHttpRequest>() {
                 @Override
                 public void accept(AggregatedHttpRequest aggregatedHttpRequest) {
-                    var contentUtf8 = aggregatedHttpRequest.contentUtf8();
+                    String contentUtf8 = aggregatedHttpRequest.contentUtf8();
                     future.complete(HttpResponse.of(200, contentUtf8));
                 }
             });

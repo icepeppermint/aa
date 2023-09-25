@@ -6,8 +6,10 @@ import javax.annotation.Nullable;
 
 import io.aa.common.HttpData;
 import io.aa.common.HttpRequestWriter;
+import io.aa.common.HttpResponse;
 import io.aa.common.util.ChunkUtil;
 import io.aa.common.util.NettyAs;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpContent;
@@ -29,21 +31,21 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
             req = io.aa.common.HttpRequest.streaming(NettyAs.requestHeaders(nettyReq));
-            final var reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
-            final var service = route.get(req.headers());
+            final ServiceRequestContext reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
+            final HttpService service = route.get(req.headers());
             if (service == null) {
                 ctx.pipeline().fireExceptionCaught(
                         new IllegalStateException("service is null (expected not null)"));
                 ctx.close();
                 return;
             }
-            final var res = service.serve(reqCtx, req);
+            final HttpResponse res = service.serve(reqCtx, req);
             res.subscribe(new HttpResponseSubscriber(res, ctx, HttpUtil.isKeepAlive(nettyReq)),
                           reqCtx.eventLoop());
         }
         if (msg instanceof HttpContent nettyBody) {
             assert req != null;
-            var content = nettyBody.content();
+            ByteBuf content = nettyBody.content();
             if (io.aa.common.util.HttpUtil.isTransferEncodingChunked(req.headers())) {
                 content = ChunkUtil.fromChunk(content);
             }

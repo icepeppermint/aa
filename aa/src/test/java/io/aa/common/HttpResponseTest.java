@@ -10,7 +10,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_response_with_headers() {
-        final var res = HttpResponse.of(ResponseHeaders.of(200));
+        final HttpResponse res = HttpResponse.of(ResponseHeaders.of(200));
 
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
@@ -19,7 +19,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_response_with_headers_content() {
-        final var res = HttpResponse.of(ResponseHeaders.of(200), HttpData.ofUtf8("Content"));
+        final HttpResponse res = HttpResponse.of(ResponseHeaders.of(200), HttpData.ofUtf8("Content"));
 
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
@@ -29,8 +29,8 @@ class HttpResponseTest {
 
     @Test
     void subscribe_response_with_headers_content_trailers() {
-        final var res = HttpResponse.of(ResponseHeaders.of(200), HttpData.ofUtf8("Content"),
-                                        HttpHeaders.of("a", "b"));
+        final HttpResponse res = HttpResponse.of(ResponseHeaders.of(200), HttpData.ofUtf8("Content"),
+                                                 HttpHeaders.of("a", "b"));
 
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
@@ -41,7 +41,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.close();
 
@@ -52,7 +52,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         res.close();
@@ -65,7 +65,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         res.write(HttpData.ofUtf8("Content2"));
@@ -80,7 +80,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content_trailers() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         res.write(HttpHeaders.of("a", "b"));
@@ -95,7 +95,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_trailers() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         res.write(HttpData.ofUtf8("Content2"));
@@ -112,7 +112,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -130,7 +130,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_request_with_headers_content_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -150,7 +150,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content_after_content_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -170,7 +170,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -192,7 +192,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_after_content1_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -214,7 +214,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_after_content2_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         res.write(HttpData.ofUtf8("Content2"));
@@ -236,7 +236,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content_trailers_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -258,7 +258,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content_trailers_after_content_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -280,7 +280,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_content_trailers_after_trailers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         res.write(HttpHeaders.of("a", "b"));
@@ -302,7 +302,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_trailers_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -326,7 +326,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_trailers_after_content1_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -350,7 +350,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_trailers_after_content2_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         res.write(HttpData.ofUtf8("Content2"));
@@ -374,7 +374,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_headers_contents_trailers_after_trailers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content1"));
         res.write(HttpData.ofUtf8("Content2"));
@@ -398,7 +398,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_error_after_headers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -416,7 +416,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_error_after_content_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -436,7 +436,7 @@ class HttpResponseTest {
 
     @Test
     void subscribe_streaming_response_with_error_after_trailers_wrote() {
-        final var res = HttpResponse.streaming();
+        final HttpResponseWriter res = HttpResponse.streaming();
         res.write(ResponseHeaders.of(200));
         res.write(HttpData.ofUtf8("Content"));
         res.write(HttpHeaders.of("a", "b"));

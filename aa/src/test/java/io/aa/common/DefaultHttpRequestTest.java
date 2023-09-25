@@ -10,9 +10,10 @@ class DefaultHttpRequestTest {
 
     @Test
     void aggregate() {
-        final var req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
-                                               HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
-        final var aggregated = req.aggregate().join();
+        final DefaultHttpRequest req =
+                new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
+                                       HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertTrue(aggregated.headers().isEmpty());
@@ -22,8 +23,9 @@ class DefaultHttpRequestTest {
 
     @Test
     void subscribe() {
-        final var req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
-                                               HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        final DefaultHttpRequest req =
+                new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
+                                       HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
         PublisherVerifier.of(req)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content")
@@ -33,8 +35,8 @@ class DefaultHttpRequestTest {
 
     @Test
     void protocolVersion() {
-        final var req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
-                                               HttpData.empty(), HttpHeaders.of());
+        final DefaultHttpRequest req = new DefaultHttpRequest(RequestHeaders.of(HttpMethod.GET, "/"),
+                                                              HttpData.empty(), HttpHeaders.of());
         assertSame(HttpVersion.HTTP_1_1, req.protocolVersion());
     }
 }

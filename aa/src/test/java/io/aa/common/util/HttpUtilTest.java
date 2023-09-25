@@ -16,57 +16,61 @@ class HttpUtilTest {
 
     @Test
     void isKeepAlive_when_request_headers_contains_connection_close_and_protocol_version_http_1_1() {
-        final var requestHeaders = RequestHeaders.builder(HttpMethod.GET, "/")
-                                                 .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
-                                                 .build();
+        final RequestHeaders requestHeaders =
+                RequestHeaders.builder(HttpMethod.GET, "/")
+                              .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+                              .build();
         assertFalse(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_1));
     }
 
     @Test
     void isKeepAlive_when_request_headers_does_not_contain_connection_close_and_protocol_version_http_1_1() {
-        final var requestHeaders = RequestHeaders.of(HttpMethod.GET, "/");
+        final RequestHeaders requestHeaders = RequestHeaders.of(HttpMethod.GET, "/");
         assertTrue(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_1));
     }
 
     @Test
     void isKeepAlive_when_request_headers_contains_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var requestHeaders = RequestHeaders.builder(HttpMethod.GET, "/")
-                                                 .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
-                                                 .build();
+        final RequestHeaders requestHeaders =
+                RequestHeaders.builder(HttpMethod.GET, "/")
+                              .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
+                              .build();
         assertTrue(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_0));
     }
 
     @Test
     void isKeepAlive_when_request_headers_does_not_contain_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var requestHeaders = RequestHeaders.of(HttpMethod.GET, "/");
+        final RequestHeaders requestHeaders = RequestHeaders.of(HttpMethod.GET, "/");
         assertFalse(HttpUtil.isKeepAlive(requestHeaders, HttpVersion.HTTP_1_0));
     }
 
     @Test
     void isKeepAlive_when_response_headers_contains_connection_close_and_protocol_version_http_1_1() {
-        final var responseHeaders = ResponseHeaders.builder(200)
-                                                   .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
-                                                   .build();
+        final ResponseHeaders responseHeaders =
+                ResponseHeaders.builder(200)
+                               .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+                               .build();
         assertFalse(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_1));
     }
 
     @Test
     void isKeepAlive_when_response_headers_does_not_contain_connection_close_and_protocol_version_http_1_1() {
-        final var responseHeaders = ResponseHeaders.of(200);
+        final ResponseHeaders responseHeaders = ResponseHeaders.of(200);
         assertTrue(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_1));
     }
 
     @Test
     void isKeepAlive_when_response_headers_contains_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var responseHeaders = ResponseHeaders.builder(200)
-                                                   .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
-                                                   .build();
+        final ResponseHeaders responseHeaders =
+                ResponseHeaders.builder(200)
+                               .add(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
+                               .build();
         assertTrue(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_0));
     }
 
     @Test
     void isKeepAlive_when_response_headers_does_not_contain_connection_keep_alive_and_protocol_version_http_1_0() {
-        final var responseHeaders = ResponseHeaders.of(200);
+        final ResponseHeaders responseHeaders = ResponseHeaders.of(200);
         assertFalse(HttpUtil.isKeepAlive(responseHeaders, HttpVersion.HTTP_1_0));
     }
 

@@ -4,20 +4,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableListMultimap;
+
 class MediaTypeTest {
 
     @Test
     void parse() {
-        final var input = "multipart/related"
-                          + "; type=\"application/xop+xml\""
-                          + "; start=\"<rootpart@here.com>\""
-                          + "; start-info=\"application/soap+xml\""
-                          + "; boundary=\"----=_Part_1_701508.1145579811786\"";
-        final var parsed = MediaType.parse(input);
+        final String input = "multipart/related" +
+                             "; type=\"application/xop+xml\"" +
+                             "; start=\"<rootpart@here.com>\"" +
+                             "; start-info=\"application/soap+xml\"" +
+                             "; boundary=\"----=_Part_1_701508.1145579811786\"";
+        final MediaType parsed = MediaType.parse(input);
         assertEquals("multipart", parsed.type());
         assertEquals("related", parsed.subtype());
 
-        final var parameters = parsed.parameters();
+        final ImmutableListMultimap<String, String> parameters = parsed.parameters();
         assertEquals("application/xop+xml", parameters.get("type").get(0));
         assertEquals("<rootpart@here.com>", parameters.get("start").get(0));
         assertEquals("application/soap+xml", parameters.get("start-info").get(0));
@@ -26,12 +28,12 @@ class MediaTypeTest {
 
     @Test
     void _toString() {
-        final var input = "multipart/related"
-                          + "; type=\"application/xop+xml\""
-                          + "; start=\"<rootpart@here.com>\""
-                          + "; start-info=\"application/soap+xml\""
-                          + "; boundary=\"----=_Part_1_701508.1145579811786\"";
-        final var parsed = MediaType.parse(input);
+        final String input = "multipart/related" +
+                             "; type=\"application/xop+xml\"" +
+                             "; start=\"<rootpart@here.com>\"" +
+                             "; start-info=\"application/soap+xml\"" +
+                             "; boundary=\"----=_Part_1_701508.1145579811786\"";
+        final MediaType parsed = MediaType.parse(input);
         assertEquals(input, parsed.toString());
     }
 }

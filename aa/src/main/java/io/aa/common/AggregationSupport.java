@@ -19,7 +19,7 @@ interface AggregationSupport {
                                                                          EventExecutor executor) {
         requireNonNull(message, "message");
         requireNonNull(executor, "executor");
-        final var future = new CompletableFuture<AggregatedHttpMessage>();
+        final CompletableFuture<AggregatedHttpMessage> future = new CompletableFuture<>();
         message.subscribe(new SubscriberImpl<>(future), executor);
         return future;
     }
@@ -63,7 +63,7 @@ interface AggregationSupport {
 
         @Override
         public void onComplete() {
-            var trailers = this.trailers;
+            HttpHeaders trailers = this.trailers;
             if (trailers == null) {
                 trailers = HttpHeaders.of();
             }

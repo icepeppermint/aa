@@ -83,7 +83,7 @@ public final class HttpStatus {
     }
 
     private static HttpStatus newConstant(int statusCode, String reasonPhrase) {
-        final var status = new HttpStatus(statusCode, reasonPhrase);
+        final HttpStatus status = new HttpStatus(statusCode, reasonPhrase);
         map[statusCode] = status;
         return status;
     }

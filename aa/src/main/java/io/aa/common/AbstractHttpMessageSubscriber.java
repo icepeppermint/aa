@@ -12,6 +12,7 @@ import io.aa.common.server.HttpResponseSubscriber;
 import io.aa.common.util.AaAs;
 import io.aa.common.util.ChunkUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpContent;
@@ -77,9 +78,10 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
 
     private io.netty.handler.codec.http.HttpObject onRequestHeaders(RequestHeaders headers) {
         requireNonNull(headers, "headers");
-        final var nettyObj = new DefaultHttpRequest(HttpVersion.valueOf(message.protocolVersion().toString()),
-                                                    HttpMethod.valueOf(headers.method().name()),
-                                                    headers.path(), AaAs.nettyHttpHeaders(headers));
+        final DefaultHttpRequest nettyObj =
+                new DefaultHttpRequest(HttpVersion.valueOf(message.protocolVersion().toString()),
+                                       HttpMethod.valueOf(headers.method().name()),
+                                       headers.path(), AaAs.nettyHttpHeaders(headers));
         HttpUtil.setTransferEncodingChunked(nettyObj, true);
         return nettyObj;
     }
@@ -88,8 +90,9 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
         requireNonNull(headers, "headers");
         checkState(this instanceof HttpResponseSubscriber,
                    "Not an instanceof HttpResponseSubscriber (expected instanceof HttpResponseSubscriber)");
-        final var nettyObj = new DefaultHttpResponse(HttpVersion.valueOf(message.protocolVersion().toString()),
-                                                     HttpResponseStatus.valueOf(headers.statusCode()));
+        final DefaultHttpResponse nettyObj =
+                new DefaultHttpResponse(HttpVersion.valueOf(message.protocolVersion().toString()),
+                                        HttpResponseStatus.valueOf(headers.statusCode()));
         HttpUtil.setTransferEncodingChunked(nettyObj, true);
         HttpUtil.setKeepAlive(nettyObj, ((HttpResponseSubscriber) this).keepAlive());
         return nettyObj;
@@ -103,22 +106,24 @@ public abstract class AbstractHttpMessageSubscriber implements Subscriber<HttpOb
         } else {
             trailers = Unpooled.EMPTY_BUFFER;
         }
-        final var future = ctx.writeAndFlush(trailers).addListener((ChannelFutureListener) future0 -> {
-            if (!future0.isSuccess()) {
-                future0.channel().pipeline().fireExceptionCaught(future0.cause());
-                ctx.close();
-                return;
-            }
-            if (trailers instanceof LastHttpContent) {
-                if (!needsTrailers) {
-                    future0.channel().pipeline().fireExceptionCaught(
-                            new IllegalStateException("needsTrailers is false (expected true)"));
-                    ctx.close();
-                    return;
-                }
-                needsTrailers = false;
-            }
-        });
+        final ChannelFuture future =
+                ctx.writeAndFlush(trailers)
+                   .addListener((ChannelFutureListener) future0 -> {
+                       if (!future0.isSuccess()) {
+                           future0.channel().pipeline().fireExceptionCaught(future0.cause());
+                           ctx.close();
+                           return;
+                       }
+                       if (trailers instanceof LastHttpContent) {
+                           if (!needsTrailers) {
+                               future0.channel().pipeline().fireExceptionCaught(
+                                       new IllegalStateException("needsTrailers is false (expected true)"));
+                               ctx.close();
+                               return;
+                           }
+                           needsTrailers = false;
+                       }
+                   });
         if (this instanceof HttpResponseSubscriber subscriber && !subscriber.keepAlive()) {
             future.addListener(ChannelFutureListener.CLOSE);
         }

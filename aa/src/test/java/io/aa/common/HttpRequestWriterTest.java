@@ -12,7 +12,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.close();
 
         PublisherVerifier.of(req)
@@ -22,7 +22,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.close();
 
@@ -34,7 +34,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.close();
@@ -48,7 +48,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_trailers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of("a", "b"));
         req.close();
@@ -62,7 +62,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_trailers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of("a", "b"));
@@ -78,7 +78,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -95,7 +95,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -114,7 +114,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_after_content_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -133,7 +133,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -154,7 +154,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_after_content1_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -175,7 +175,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_after_content2_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -196,7 +196,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_trailers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -217,7 +217,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_trailers_after_content_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -238,7 +238,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_content_trailers_after_trailers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of("a", "b"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -259,7 +259,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_trailers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -282,7 +282,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_trailers_after_content1_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -305,7 +305,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_trailers_after_content2_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -328,7 +328,7 @@ class HttpRequestWriterTest {
 
     @Test
     void subscribe_request_with_headers_contents_trailers_after_trailers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of("a", "b"));
@@ -351,10 +351,10 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.close();
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertTrue(aggregated.content().isEmpty());
@@ -363,11 +363,11 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.close();
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -376,12 +376,12 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.close();
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -390,12 +390,12 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_trailers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of());
         req.close();
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -404,13 +404,13 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_trailers() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of());
         req.close();
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -419,7 +419,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -429,7 +429,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertTrue(aggregated.content().isEmpty());
@@ -438,7 +438,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -449,7 +449,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -458,7 +458,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_after_content_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -469,7 +469,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -478,7 +478,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -490,7 +490,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -499,7 +499,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_after_content1_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -511,7 +511,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -520,7 +520,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_after_content2_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -532,7 +532,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -541,7 +541,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_trailers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -553,7 +553,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -562,7 +562,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_trailers_after_content_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -574,7 +574,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -583,7 +583,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_content_trailers_after_trailers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content"));
         req.write(HttpHeaders.of());
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -595,7 +595,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content", aggregated.contentUtf8());
@@ -604,7 +604,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_trailers_after_headers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Thread.sleep(300);
@@ -617,7 +617,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -626,7 +626,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_trailers_after_content1_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -639,7 +639,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -648,7 +648,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_trailers_after_content2_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -661,7 +661,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());
@@ -670,7 +670,7 @@ class HttpRequestWriterTest {
 
     @Test
     void aggregate_request_with_headers_contents_trailers_after_trailers_wrote() {
-        final var req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequestWriter req = new HttpRequestWriter(RequestHeaders.of(HttpMethod.GET, "/"));
         req.write(HttpData.ofUtf8("Content1"));
         req.write(HttpData.ofUtf8("Content2"));
         req.write(HttpHeaders.of());
@@ -683,7 +683,7 @@ class HttpRequestWriterTest {
             req.close();
         });
 
-        final var aggregated = req.aggregate().join();
+        final AggregatedHttpRequest aggregated = req.aggregate().join();
         assertSame(HttpMethod.GET, aggregated.method());
         assertEquals("/", aggregated.path());
         assertEquals("Content1Content2", aggregated.contentUtf8());

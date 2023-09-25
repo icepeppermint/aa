@@ -27,7 +27,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     @Nullable
     public final String get(String name) {
         requireNonNull(name, "name");
-        final var values = container.get(name);
+        final List<String> values = container.get(name);
         if (values.isEmpty()) {
             return null;
         }
@@ -43,7 +43,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     @Nullable
     public final String getLast(String name) {
         requireNonNull(name, "name");
-        final var values = container.get(name);
+        final List<String> values = container.get(name);
         if (values.isEmpty()) {
             return null;
         }
@@ -58,7 +58,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     private static String getOrDefault(Supplier<String> supplier, String defaultValue) {
         requireNonNull(supplier, "supplier");
         requireNonNull(defaultValue, "defaultValue");
-        final var value = supplier.get();
+        final String value = supplier.get();
         return value != null ? value : defaultValue;
     }
 
@@ -239,7 +239,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     public final boolean contains(String name, String value) {
         requireNonNull(name, "name");
         requireNonNull(value, "value");
-        for (var val : container.get(name)) {
+        for (String val : container.get(name)) {
             if (val.equals(value)) {
                 return true;
             }
@@ -303,7 +303,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     public final void add(String name, Iterable<String> values) {
         requireNonNull(name, "name");
         requireNonNull(values, "values");
-        for (var value : values) {
+        for (String value : values) {
             add(name, value);
         }
     }
@@ -316,7 +316,7 @@ abstract class StringMultimap implements StringMultimapGetters {
 
     public final void add(Iterable<? extends Entry<String, String>> entries) {
         requireNonNull(entries, "entries");
-        for (var entry : entries) {
+        for (Entry<String, String> entry : entries) {
             add(entry.getKey(), entry.getValue());
         }
     }
@@ -343,7 +343,7 @@ abstract class StringMultimap implements StringMultimapGetters {
 
     public final void addObject(Iterable<? extends Entry<String, ?>> entries) {
         requireNonNull(entries, "entries");
-        for (var entry : entries) {
+        for (Entry<String, ?> entry : entries) {
             add(entry.getKey(), Strings.fromObject(entry.getValue()));
         }
     }
@@ -390,7 +390,7 @@ abstract class StringMultimap implements StringMultimapGetters {
 
     public final void set(Iterable<? extends Entry<String, String>> entries) {
         requireNonNull(entries, "entries");
-        for (var entry : entries) {
+        for (Entry<String, String> entry : entries) {
             set(entry.getKey(), entry.getValue());
         }
     }
@@ -404,7 +404,7 @@ abstract class StringMultimap implements StringMultimapGetters {
     public final void setObject(String name, Iterable<?> values) {
         requireNonNull(name, "name");
         requireNonNull(values, "values");
-        for (var value : values) {
+        for (Object value : values) {
             set(name, Strings.fromObject(value));
         }
     }
@@ -417,7 +417,7 @@ abstract class StringMultimap implements StringMultimapGetters {
 
     public final void setObject(Iterable<? extends Entry<String, ?>> entries) {
         requireNonNull(entries, "entries");
-        for (var entry : entries) {
+        for (Entry<String, ?> entry : entries) {
             set(entry.getKey(), Strings.fromObject(entry.getValue()));
         }
     }

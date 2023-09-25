@@ -18,7 +18,7 @@ class HttpHeadersBase extends StringMultimap implements HttpHeaderGetters {
     @Override
     @Nullable
     public final MediaType contentType() {
-        final var contentType = get(HttpHeaderNames.CONTENT_TYPE);
+        final String contentType = get(HttpHeaderNames.CONTENT_TYPE);
         return contentType != null ? MediaType.parse(contentType) : null;
     }
 

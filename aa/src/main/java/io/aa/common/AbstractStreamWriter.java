@@ -36,7 +36,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
     public final void subscribe(Subscriber<? super HttpObject> subscriber, EventExecutor executor) {
         requireNonNull(subscriber, "subscriber");
         requireNonNull(executor, "executor");
-        final var subscription = new SubscriptionImpl(subscriber, executor, queue);
+        final SubscriptionImpl subscription = new SubscriptionImpl(subscriber, executor, queue);
         if (subscriptionUpdater.compareAndSet(this, null, subscription)) {
             if (subscription.inEventLoop()) {
                 subscribe0(subscription);
@@ -59,7 +59,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
     public final void write(HttpObject object) {
         requireNonNull(object, "object");
         queue.add(object);
-        final var subscription = this.subscription;
+        final SubscriptionImpl subscription = this.subscription;
         if (subscription == null) {
             return;
         }
@@ -151,7 +151,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
         private void notifySubscriber() {
             assert inEventLoop();
             while (shouldProcess()) {
-                final var object = queue.poll();
+                final HttpObject object = queue.poll();
                 assert object != null;
                 if (processEvent(object)) {
                     return;
@@ -214,7 +214,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
 
         private long demandGetAndAdd(long inc) {
             assert inEventLoop();
-            final var demand0 = demand;
+            final long demand0 = demand;
             demand += inc;
             return demand0;
         }
@@ -233,7 +233,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
 
         private boolean terminate() {
             assert inEventLoop();
-            final var terminated0 = terminated;
+            final boolean terminated0 = terminated;
             terminated = true;
             return terminated0;
         }

@@ -37,7 +37,7 @@ public final class HttpMethod {
 
     private static HttpMethod newConstant(String name) {
         requireNonNull(name, "name");
-        final var httpMethod = new HttpMethod(name);
+        final HttpMethod httpMethod = new HttpMethod(name);
         KNOWN_METHODS.put(name, httpMethod);
         return httpMethod;
     }

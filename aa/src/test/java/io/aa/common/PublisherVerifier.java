@@ -145,7 +145,7 @@ public final class PublisherVerifier<T> {
 
     private void request() {
         await().untilTrue(subscribed);
-        final var subscription = this.subscription;
+        final Subscription subscription = this.subscription;
         assertNotNull(subscription, "subscription is null (expected not null)");
         subscription.request(1);
     }
@@ -162,7 +162,7 @@ public final class PublisherVerifier<T> {
     }
 
     private PublisherVerifier<T> unsetValue() {
-        final var value = valueUpdater.getAndSet(this, null);
+        final Object value = valueUpdater.getAndSet(this, null);
         if (!valueUpdated.compareAndSet(true, false)) {
             valueUpdater.set(this, value);
             throw new IllegalStateException("valueUpdated is false (expected true)");
@@ -183,7 +183,7 @@ public final class PublisherVerifier<T> {
     }
 
     private Throwable mustError() {
-        final var error = error();
+        final Throwable error = error();
         if (error == null) {
             throw new AssertionError("error is null (expected not null)");
         }
@@ -194,7 +194,7 @@ public final class PublisherVerifier<T> {
     private static <T> T expect(Object value, Class<T> expected) {
         requireNonNull(value, "value");
         requireNonNull(expected, "expected");
-        final var actual = value.getClass();
+        final Class<?> actual = value.getClass();
         if (!expected.isAssignableFrom(actual)) {
             throw new AssertionError("The value is " + actual.getSimpleName() +
                                      " (expected instance of " + expected.getSimpleName() + ')');
@@ -220,7 +220,7 @@ public final class PublisherVerifier<T> {
         @Override
         public void onNext(T o) {
             await().untilFalse(valueUpdated);
-            final var value = valueUpdater.getAndSet(PublisherVerifier.this, o);
+            final Object value = valueUpdater.getAndSet(PublisherVerifier.this, o);
             if (!valueUpdated.compareAndSet(false, true)) {
                 valueUpdater.set(PublisherVerifier.this, value);
                 throw new IllegalStateException("valuedUpdated is true (expected false)");

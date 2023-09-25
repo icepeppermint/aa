@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import com.google.common.base.Splitter;
 
@@ -17,17 +18,17 @@ public final class ChunkUtil {
 
     public static ByteBuf toChunk(ByteBuf byteBuf) {
         requireNonNull(byteBuf, "byteBuf");
-        final var chunk = byteBuf.readableBytes() + SEPARATOR + toStringUtf8(byteBuf) + SEPARATOR;
+        final String chunk = byteBuf.readableBytes() + SEPARATOR + toStringUtf8(byteBuf) + SEPARATOR;
         return Unpooled.copiedBuffer(chunk, StandardCharsets.UTF_8);
     }
 
     public static ByteBuf fromChunk(ByteBuf byteBuf) {
         requireNonNull(byteBuf, "byteBuf");
-        final var split = SPLITTER.splitToList(toStringUtf8(byteBuf));
+        final List<String> split = SPLITTER.splitToList(toStringUtf8(byteBuf));
         if (split.isEmpty()) {
             return Unpooled.EMPTY_BUFFER;
         }
-        final var length = Integer.parseInt(split.get(0));
+        final int length = Integer.parseInt(split.get(0));
         if (length <= 0) {
             checkState(split.size() == 1, "split.size() != 1 (expected == 1)");
             return Unpooled.EMPTY_BUFFER;

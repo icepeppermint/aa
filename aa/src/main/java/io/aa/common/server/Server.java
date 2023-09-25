@@ -8,6 +8,7 @@ import java.net.URI;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -35,13 +36,13 @@ public final class Server {
     }
 
     public void start() throws InterruptedException {
-        final var bootstrap = new ServerBootstrap();
+        final ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                  .channel(NioServerSocketChannel.class)
                  .childHandler(new ChannelInitializer<SocketChannel>() {
                      @Override
                      protected void initChannel(SocketChannel ch) throws Exception {
-                         final var pipeline = ch.pipeline();
+                         final ChannelPipeline pipeline = ch.pipeline();
                          pipeline.addLast(new HttpServerCodec());
                          pipeline.addLast(new ChunkedWriteHandler());
                          pipeline.addLast(new HttpServerHandler(route));

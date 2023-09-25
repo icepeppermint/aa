@@ -10,9 +10,10 @@ class DefaultHttpResponseTest {
 
     @Test
     void aggregate() {
-        final var res = new DefaultHttpResponse(ResponseHeaders.of(200),
-                                                HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
-        final var aggregated = res.aggregate().join();
+        final DefaultHttpResponse res =
+                new DefaultHttpResponse(ResponseHeaders.of(200),
+                                        HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        final AggregatedHttpResponse aggregated = res.aggregate().join();
         assertEquals(200, aggregated.statusCode());
         assertEquals("Content", aggregated.contentUtf8());
         assertTrue(aggregated.trailers().contains("a"));
@@ -20,8 +21,9 @@ class DefaultHttpResponseTest {
 
     @Test
     void subscribe() {
-        final var res = new DefaultHttpResponse(ResponseHeaders.of(200),
-                                                HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
+        final DefaultHttpResponse res =
+                new DefaultHttpResponse(ResponseHeaders.of(200),
+                                        HttpData.ofUtf8("Content"), HttpHeaders.of("a", "b"));
         PublisherVerifier.of(res)
                          .assertResponseHeaders(ResponseHeaders.of(200))
                          .assertContent("Content")
@@ -31,8 +33,8 @@ class DefaultHttpResponseTest {
 
     @Test
     void protocolVersion() {
-        final var res = new DefaultHttpResponse(ResponseHeaders.of(200),
-                                                HttpData.empty(), HttpHeaders.of());
+        final DefaultHttpResponse res = new DefaultHttpResponse(ResponseHeaders.of(200),
+                                                                HttpData.empty(), HttpHeaders.of());
         assertSame(HttpVersion.HTTP_1_1, res.protocolVersion());
     }
 }

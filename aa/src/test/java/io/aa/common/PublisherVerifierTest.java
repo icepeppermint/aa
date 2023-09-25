@@ -11,7 +11,7 @@ class PublisherVerifierTest {
 
     @Test
     void assertNext() {
-        final var publisher = Flowable.just(1, 2, 3, 4, 5);
+        final Flowable<Integer> publisher = Flowable.just(1, 2, 3, 4, 5);
         PublisherVerifier.of(publisher)
                          .assertNext(v -> assertEquals(1, v))
                          .assertNext(v -> assertEquals(2, v))
@@ -22,7 +22,7 @@ class PublisherVerifierTest {
 
     @Test
     void assertNext_class() {
-        final var publisher = Flowable.just(1, 2, 3, 4, 5);
+        final Flowable<Integer> publisher = Flowable.just(1, 2, 3, 4, 5);
         PublisherVerifier.of(publisher)
                          .assertNext(Integer.class)
                          .assertNext(Integer.class)
@@ -33,22 +33,22 @@ class PublisherVerifierTest {
 
     @Test
     void assertRequestHeader() {
-        final var publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"));
+        final HttpRequest publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"));
         PublisherVerifier.of(publisher)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"));
     }
 
     @Test
     void assertResponseHeader() {
-        final var publisher = HttpResponse.of(ResponseHeaders.of(200));
+        final HttpResponse publisher = HttpResponse.of(ResponseHeaders.of(200));
         PublisherVerifier.of(publisher)
                          .assertResponseHeaders(ResponseHeaders.of(200));
     }
 
     @Test
     void assertContent() {
-        final var publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
-                                             HttpData.ofUtf8("Content"));
+        final HttpRequest publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
+                                                     HttpData.ofUtf8("Content"));
         PublisherVerifier.of(publisher)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertContent("Content");
@@ -56,8 +56,8 @@ class PublisherVerifierTest {
 
     @Test
     void assertTrailers() {
-        final var publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
-                                             HttpHeaders.of("a", "b"));
+        final HttpRequest publisher = HttpRequest.of(RequestHeaders.of(HttpMethod.GET, "/"),
+                                                     HttpHeaders.of("a", "b"));
         PublisherVerifier.of(publisher)
                          .assertRequestHeaders(RequestHeaders.of(HttpMethod.GET, "/"))
                          .assertTrailers(trailers -> assertEquals("b", trailers.get("a")));
@@ -65,21 +65,21 @@ class PublisherVerifierTest {
 
     @Test
     void assertComplete() {
-        final var publisher = Flowable.empty();
+        final Flowable<Object> publisher = Flowable.empty();
         PublisherVerifier.of(publisher)
                          .assertComplete();
     }
 
     @Test
     void assertError() {
-        final var publisher = Flowable.error(new RuntimeException());
+        final Flowable<Object> publisher = Flowable.error(new RuntimeException());
         PublisherVerifier.of(publisher)
                          .assertError(e -> assertTrue(e instanceof RuntimeException));
     }
 
     @Test
     void assertError_class() {
-        final var publisher = Flowable.error(new RuntimeException());
+        final Flowable<Object> publisher = Flowable.error(new RuntimeException());
         PublisherVerifier.of(publisher)
                          .assertError(RuntimeException.class);
     }

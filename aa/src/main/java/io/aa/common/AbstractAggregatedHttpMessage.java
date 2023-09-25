@@ -33,8 +33,8 @@ abstract class AbstractAggregatedHttpMessage implements AggregatedHttpMessage {
 
     private static HttpData aggregated(Queue<HttpData> queue) {
         requireNonNull(queue, "queue");
-        final var aggregated = new StringBuilder();
-        for (var httpData : queue) {
+        final StringBuilder aggregated = new StringBuilder();
+        for (HttpData httpData : queue) {
             aggregated.append(httpData.contentUtf8());
         }
         return HttpData.ofUtf8(aggregated.toString());

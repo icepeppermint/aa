@@ -51,11 +51,11 @@ public final class ServerBuilder {
     public ServerBuilder annotatedService(String prefix, Object object) {
         requireNonNull(prefix, "prefix");
         requireNonNull(object, "object");
-        for (var method : object.getClass().getDeclaredMethods()) {
+        for (Method method : object.getClass().getDeclaredMethods()) {
             if (!isPublic(method)) {
                 continue;
             }
-            for (var httpMethodAnnotationClass : HTTP_METHOD_ANNOTATION_CLASSES) {
+            for (Class<? extends Annotation> httpMethodAnnotationClass : HTTP_METHOD_ANNOTATION_CLASSES) {
                 routeAdd(httpMethodAnnotationClass, prefix, object, method);
             }
         }
@@ -75,7 +75,7 @@ public final class ServerBuilder {
         requireNonNull(method, "method");
 
         assert isPublic(method);
-        final var httpMethodAnnotation = method.getDeclaredAnnotation(httpMethodAnnotationClass);
+        final T httpMethodAnnotation = method.getDeclaredAnnotation(httpMethodAnnotationClass);
         if (httpMethodAnnotation == null) {
             return;
         }
@@ -100,7 +100,7 @@ public final class ServerBuilder {
             throw new IllegalStateException(
                     "Unhandled HTTP method annotation: " + httpMethodAnnotation.getClass().getSimpleName());
         }
-        for (var path0 : path) {
+        for (String path0 : path) {
             route.add(httpMethod, prefix + path0, new AnnotatedHttpService(object, method));
         }
     }
@@ -124,8 +124,8 @@ public final class ServerBuilder {
         private Object[] args(ServiceRequestContext ctx, HttpRequest req) {
             requireNonNull(ctx, "ctx");
             requireNonNull(req, "req");
-            final var args = new ArrayList<>();
-            for (var parameterType : method.getParameterTypes()) {
+            final ArrayList<Object> args = new ArrayList<>();
+            for (Class<?> parameterType : method.getParameterTypes()) {
                 Object arg = null;
                 if (parameterType.equals(ServiceRequestContext.class)) {
                     arg = ctx;

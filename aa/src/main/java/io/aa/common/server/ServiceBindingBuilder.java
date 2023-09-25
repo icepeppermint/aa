@@ -56,7 +56,7 @@ public final class ServiceBindingBuilder {
         requireNonNull(service, "service");
         checkState(methods != null, "methods == null");
         checkState(path != null, "path == null");
-        for (var method : methods) {
+        for (HttpMethod method : methods) {
             serverBuilder.service(method, path, service);
         }
         return serverBuilder;

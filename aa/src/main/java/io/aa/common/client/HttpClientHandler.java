@@ -3,6 +3,7 @@ package io.aa.common.client;
 import static java.util.Objects.requireNonNull;
 
 import io.aa.common.HttpData;
+import io.aa.common.HttpRequest;
 import io.aa.common.HttpResponseWriter;
 import io.aa.common.util.ChunkUtil;
 import io.aa.common.util.NettyAs;
@@ -24,7 +25,7 @@ final class HttpClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        final var req = cctx.request();
+        final HttpRequest req = cctx.request();
         req.subscribe(new HttpRequestSubscriber(req, ctx));
     }
 

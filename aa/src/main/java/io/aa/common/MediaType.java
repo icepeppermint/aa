@@ -9,6 +9,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableListMultimap.Builder;
 
 public final class MediaType {
 
@@ -99,7 +100,7 @@ public final class MediaType {
         String consumeToken(CharMatcher matcher) {
             requireNonNull(matcher, "matcher");
             checkState(hasMore());
-            final var start = position;
+            final int start = position;
             position = matcher.negate().indexIn(input, start);
             return hasMore() ? input.substring(start, position) : input.substring(start);
         }
@@ -107,7 +108,7 @@ public final class MediaType {
         char consumeChar(CharMatcher matcher) {
             requireNonNull(matcher, "matcher");
             checkState(hasMore());
-            final var c = previewChar();
+            final char c = previewChar();
             checkState(matcher.matches(c));
             position++;
             return c;
@@ -139,12 +140,12 @@ public final class MediaType {
         static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
 
         static MediaType parse(String input) {
-            final var tokenizer = new Tokenizer(input);
+            final Tokenizer tokenizer = new Tokenizer(input);
             try {
-                final var type = tokenizer.consumeToken(TOKEN_MATCHER);
+                final String type = tokenizer.consumeToken(TOKEN_MATCHER);
                 tokenizer.consumeChar('/');
-                final var subtype = tokenizer.consumeToken(TOKEN_MATCHER);
-                final var parameters = consumeParameters(tokenizer);
+                final String subtype = tokenizer.consumeToken(TOKEN_MATCHER);
+                final ImmutableListMultimap<String, String> parameters = consumeParameters(tokenizer);
                 return new MediaType(type, subtype, parameters);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Could not parse '" + input + '\'', e);
@@ -153,10 +154,10 @@ public final class MediaType {
 
         static ImmutableListMultimap<String, String> consumeParameters(Tokenizer tokenizer) {
             requireNonNull(tokenizer, "tokenizer");
-            final var parameters = ImmutableListMultimap.<String, String>builder();
+            final Builder<String, String> parameters = ImmutableListMultimap.<String, String>builder();
             while (tokenizer.hasMore()) {
                 consumeParameterSeparator(tokenizer);
-                final var attribute = consumeAttributeKey(tokenizer);
+                final String attribute = consumeAttributeKey(tokenizer);
                 tokenizer.consumeChar('=');
                 parameters.put(attribute, consumeAttributeValue(tokenizer));
             }
@@ -180,7 +181,7 @@ public final class MediaType {
             final String value;
             if ('"' == tokenizer.previewChar()) {
                 tokenizer.consumeChar('"');
-                final var valueBuilder = new StringBuilder();
+                final StringBuilder valueBuilder = new StringBuilder();
                 while ('"' != tokenizer.previewChar()) {
                     if ('\\' == tokenizer.previewChar()) {
                         tokenizer.consumeChar('\\');
@@ -204,10 +205,10 @@ public final class MediaType {
 
         static String string(MediaType mediaType) {
             requireNonNull(mediaType, "mediaType");
-            final var builder = new StringBuilder().append(mediaType.type())
-                                                   .append('/')
-                                                   .append(mediaType.subtype());
-            final var parameters = mediaType.parameters();
+            final StringBuilder builder = new StringBuilder().append(mediaType.type())
+                                                             .append('/')
+                                                             .append(mediaType.subtype());
+            final ImmutableListMultimap<String, String> parameters = mediaType.parameters();
             if (!parameters.isEmpty()) {
                 appendParameters(builder, parameters);
             }
@@ -233,7 +234,7 @@ public final class MediaType {
 
         static String escapeAndQuote(String value) {
             requireNonNull(value, "value");
-            final var quoted = new StringBuilder(value.length() + 16).append('"');
+            final StringBuilder quoted = new StringBuilder(value.length() + 16).append('"');
             appendEscaped(quoted, value);
             return quoted.append('"').toString();
         }
@@ -242,7 +243,7 @@ public final class MediaType {
             requireNonNull(builder, "builder");
             requireNonNull(value, "value");
             for (int i = 0; i < value.length(); i++) {
-                final var c = value.charAt(i);
+                final char c = value.charAt(i);
                 if (c == '"' || c == '\\' || c == '\r') {
                     builder.append('\\');
                 }
