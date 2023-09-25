@@ -81,7 +81,7 @@ public final class MediaType {
     public String toString() {
         String result = cachedToString;
         if (result == null) {
-            result = As.string(this);
+            result = MediaTypeAs.string(this);
             cachedToString = result;
         }
         return result;
@@ -89,10 +89,10 @@ public final class MediaType {
 
     private static final class Tokenizer {
 
-        final String input;
-        int position;
+        private final String input;
+        private int position;
 
-        Tokenizer(String input) {
+        private Tokenizer(String input) {
             this.input = requireNonNull(input, "input");
             position = 0;
         }
@@ -133,11 +133,11 @@ public final class MediaType {
 
     private static final class Parser {
 
-        static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
-                                                        .and(CharMatcher.isNot(' '))
-                                                        .and(CharMatcher.noneOf("()<>@,;:\\\"/[]?="));
-        static final CharMatcher LINEAR_WHITESPACE_MATCHER = CharMatcher.anyOf(" \t\r\n");
-        static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
+        private static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
+                                                                .and(CharMatcher.isNot(' '))
+                                                                .and(CharMatcher.noneOf("()<>@,;:\\\"/[]?="));
+        private static final CharMatcher LINEAR_WHITESPACE_MATCHER = CharMatcher.anyOf(" \t\r\n");
+        private static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
 
         static MediaType parse(String input) {
             final Tokenizer tokenizer = new Tokenizer(input);
@@ -152,9 +152,9 @@ public final class MediaType {
             }
         }
 
-        static ImmutableListMultimap<String, String> consumeParameters(Tokenizer tokenizer) {
+        private static ImmutableListMultimap<String, String> consumeParameters(Tokenizer tokenizer) {
             requireNonNull(tokenizer, "tokenizer");
-            final Builder<String, String> parameters = ImmutableListMultimap.<String, String>builder();
+            final Builder<String, String> parameters = ImmutableListMultimap.builder();
             while (tokenizer.hasMore()) {
                 consumeParameterSeparator(tokenizer);
                 final String attribute = consumeAttributeKey(tokenizer);
@@ -164,19 +164,19 @@ public final class MediaType {
             return parameters.build();
         }
 
-        static void consumeParameterSeparator(Tokenizer tokenizer) {
+        private static void consumeParameterSeparator(Tokenizer tokenizer) {
             requireNonNull(tokenizer, "tokenizer");
             tokenizer.consumeToken(LINEAR_WHITESPACE_MATCHER);
             tokenizer.consumeChar(';');
             tokenizer.consumeToken(LINEAR_WHITESPACE_MATCHER);
         }
 
-        static String consumeAttributeKey(Tokenizer tokenizer) {
+        private static String consumeAttributeKey(Tokenizer tokenizer) {
             requireNonNull(tokenizer, "tokenizer");
             return tokenizer.consumeToken(TOKEN_MATCHER);
         }
 
-        static String consumeAttributeValue(Tokenizer tokenizer) {
+        private static String consumeAttributeValue(Tokenizer tokenizer) {
             requireNonNull(tokenizer, "tokenizer");
             final String value;
             if ('"' == tokenizer.previewChar()) {
@@ -199,9 +199,11 @@ public final class MediaType {
         }
     }
 
-    private static final class As {
+    private static final class MediaTypeAs {
 
-        static final MapJoiner PARAMETER_JOINER = Joiner.on("; ").withKeyValueSeparator('=');
+        private static final String PARAMETER_SEPARATOR = "; ";
+        private static final MapJoiner PARAMETER_JOINER = Joiner.on(PARAMETER_SEPARATOR)
+                                                                .withKeyValueSeparator('=');
 
         static String string(MediaType mediaType) {
             requireNonNull(mediaType, "mediaType");
@@ -215,15 +217,16 @@ public final class MediaType {
             return builder.toString();
         }
 
-        static void appendParameters(StringBuilder builder, ImmutableListMultimap<String, String> parameters) {
+        private static void appendParameters(StringBuilder builder,
+                                             ImmutableListMultimap<String, String> parameters) {
             requireNonNull(builder, "builder");
             requireNonNull(parameters, "parameters");
-            builder.append("; ");
+            builder.append(PARAMETER_SEPARATOR);
             PARAMETER_JOINER.appendTo(builder, transformValues(parameters,
-                                                               As::escapeAndQuoteIfNeeded).entries());
+                                                               MediaTypeAs::escapeAndQuoteIfNeeded).entries());
         }
 
-        static String escapeAndQuoteIfNeeded(String value) {
+        private static String escapeAndQuoteIfNeeded(String value) {
             requireNonNull(value, "value");
             if (!value.isEmpty() && Parser.TOKEN_MATCHER.matchesAllOf(value)) {
                 return value;
@@ -232,14 +235,14 @@ public final class MediaType {
             }
         }
 
-        static String escapeAndQuote(String value) {
+        private static String escapeAndQuote(String value) {
             requireNonNull(value, "value");
             final StringBuilder quoted = new StringBuilder(value.length() + 16).append('"');
             appendEscaped(quoted, value);
             return quoted.append('"').toString();
         }
 
-        static void appendEscaped(StringBuilder builder, String value) {
+        private static void appendEscaped(StringBuilder builder, String value) {
             requireNonNull(builder, "builder");
             requireNonNull(value, "value");
             for (int i = 0; i < value.length(); i++) {
