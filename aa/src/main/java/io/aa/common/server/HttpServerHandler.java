@@ -8,7 +8,7 @@ import io.aa.common.HttpData;
 import io.aa.common.HttpRequestWriter;
 import io.aa.common.HttpResponse;
 import io.aa.common.util.ChunkUtil;
-import io.aa.common.util.NettyAs;
+import io.aa.common.util.NettyUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -30,7 +30,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest nettyReq) {
-            req = io.aa.common.HttpRequest.streaming(NettyAs.requestHeaders(nettyReq));
+            req = io.aa.common.HttpRequest.streaming(NettyUtil.toRequestHeaders(nettyReq));
             final ServiceRequestContext reqCtx = new ServiceRequestContext(req, ctx.channel().eventLoop());
             final HttpService service = route.get(req.headers());
             if (service == null) {
@@ -51,7 +51,7 @@ final class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
             }
             req.write(HttpData.of(content));
             if (msg instanceof LastHttpContent nettyTrailer) {
-                req.write(NettyAs.httpHeaders(nettyTrailer.trailingHeaders()));
+                req.write(NettyUtil.toHttpHeaders(nettyTrailer.trailingHeaders()));
                 req.close();
                 req = null;
             }
