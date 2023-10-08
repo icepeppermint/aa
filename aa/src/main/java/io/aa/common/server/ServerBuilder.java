@@ -132,14 +132,28 @@ public final class ServerBuilder {
         @Override
         public HttpResponse serve(ServiceRequestContext ctx, HttpRequest req) throws Exception {
             assert method != null;
+            checkMethodParameterTypes();
             method.setAccessible(true);
             return needsDirectInvocation() ? serve0(ctx, req) : delegate(ctx, req);
         }
 
-        HttpResponse serve0(ServiceRequestContext ctx, Object req) throws Exception {
-            requireNonNull(ctx, "ctx");
-            requireNonNull(req, "req");
-            return (HttpResponse) method.invoke(object, args(ctx, req));
+        void checkMethodParameterTypes() {
+            assert method != null;
+            boolean containsHttpRequestType = false;
+            boolean containsAggregatedHttpRequestType = false;
+            for (Class<?> parameterType : method.getParameterTypes()) {
+                if (parameterType.equals(HttpRequest.class)) {
+                    containsHttpRequestType = true;
+                } else if (parameterType.equals(AggregatedHttpRequest.class)) {
+                    containsAggregatedHttpRequestType = true;
+                }
+            }
+            if (containsHttpRequestType && containsAggregatedHttpRequestType) {
+                throw new IllegalStateException(
+                        HttpRequest.class.getSimpleName() + " and "
+                        + AggregatedHttpRequest.class.getSimpleName()
+                        + " cannot be used together in the parameter type of a service method.");
+            }
         }
 
         boolean needsDirectInvocation() {
@@ -150,6 +164,12 @@ public final class ServerBuilder {
                 }
             }
             return true;
+        }
+
+        HttpResponse serve0(ServiceRequestContext ctx, Object req) throws Exception {
+            requireNonNull(ctx, "ctx");
+            requireNonNull(req, "req");
+            return (HttpResponse) method.invoke(object, args(ctx, req));
         }
 
         Object[] args(ServiceRequestContext ctx, Object req) {
