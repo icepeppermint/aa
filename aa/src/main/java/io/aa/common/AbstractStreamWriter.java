@@ -92,35 +92,35 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
 
     private static final class ErrorEvent implements HttpObject {
 
-        private final Throwable e;
+        final Throwable e;
 
         ErrorEvent(Throwable e) {
             this.e = requireNonNull(e, "e");
         }
 
-        private Throwable e() {
+        Throwable e() {
             return e;
         }
     }
 
     private static final class SubscriptionImpl implements Subscription {
 
-        private final Subscriber<? super HttpObject> downstream;
-        private final EventExecutor executor;
-        private final Queue<HttpObject> queue;
-        private long demand;
-        private boolean terminated;
+        final Subscriber<? super HttpObject> downstream;
+        final EventExecutor executor;
+        final Queue<HttpObject> queue;
+        long demand;
+        boolean terminated;
         @Nullable
-        private Throwable error;
+        Throwable error;
 
-        private SubscriptionImpl(Subscriber<? super HttpObject> subscriber, EventExecutor executor,
-                                 Queue<HttpObject> queue) {
+        SubscriptionImpl(Subscriber<? super HttpObject> subscriber, EventExecutor executor,
+                         Queue<HttpObject> queue) {
             downstream = requireNonNull(subscriber, "subscriber");
             this.executor = requireNonNull(executor, "executor");
             this.queue = requireNonNull(queue, "queue");
         }
 
-        private void doOnSubscribe() {
+        void doOnSubscribe() {
             assert inEventLoop();
             if (error != null && !terminate()) {
                 downstream.onError(error);
@@ -136,7 +136,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             }
         }
 
-        private void request0(long n) {
+        void request0(long n) {
             assert inEventLoop();
             if (n <= 0 && !terminate()) {
                 subscriber().onError(new IllegalArgumentException("negative subscription request"));
@@ -148,7 +148,7 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             notifySubscriber();
         }
 
-        private void notifySubscriber() {
+        void notifySubscriber() {
             assert inEventLoop();
             while (shouldProcess()) {
                 final HttpObject object = queue.poll();
@@ -163,11 +163,11 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             }
         }
 
-        private boolean shouldProcess() {
+        boolean shouldProcess() {
             return demand > 0 && !queue.isEmpty() && !terminated;
         }
 
-        private boolean processEvent(HttpObject object) {
+        boolean processEvent(HttpObject object) {
             requireNonNull(object, "object");
             if (object instanceof CloseEvent && !terminate()) {
                 downstream.onComplete();
@@ -180,13 +180,13 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             return false;
         }
 
-        private static boolean shouldSkip(HttpObject object) {
+        static boolean shouldSkip(HttpObject object) {
             requireNonNull(object, "object");
             return (object instanceof HttpData httpData && httpData.isEmpty()) ||
                    (DefaultHttpHeaders.class.equals(object.getClass()) && ((HttpHeadersBase) object).isEmpty());
         }
 
-        private void process(HttpObject object) {
+        void process(HttpObject object) {
             requireNonNull(object, "object");
             try {
                 downstream.onNext(object);
@@ -208,30 +208,30 @@ abstract class AbstractStreamWriter implements StreamWriter<HttpObject> {
             }
         }
 
-        private void cancel0() {
+        void cancel0() {
             terminate();
         }
 
-        private long demandGetAndAdd(long inc) {
+        long demandGetAndAdd(long inc) {
             assert inEventLoop();
             final long demand0 = demand;
             demand += inc;
             return demand0;
         }
 
-        private Subscriber<? super HttpObject> subscriber() {
+        Subscriber<? super HttpObject> subscriber() {
             return downstream;
         }
 
-        private EventExecutor executor() {
+        EventExecutor executor() {
             return executor;
         }
 
-        private boolean inEventLoop() {
+        boolean inEventLoop() {
             return executor.inEventLoop();
         }
 
-        private boolean terminate() {
+        boolean terminate() {
             assert inEventLoop();
             final boolean terminated0 = terminated;
             terminated = true;

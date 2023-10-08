@@ -89,10 +89,10 @@ public final class MediaType {
 
     private static final class Tokenizer {
 
-        private final String input;
-        private int position;
+        final String input;
+        int position;
 
-        private Tokenizer(String input) {
+        Tokenizer(String input) {
             this.input = requireNonNull(input, "input");
             position = 0;
         }
@@ -133,11 +133,11 @@ public final class MediaType {
 
     private static final class Parser {
 
-        private static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
-                                                                .and(CharMatcher.isNot(' '))
-                                                                .and(CharMatcher.noneOf("()<>@,;:\\\"/[]?="));
-        private static final CharMatcher LINEAR_WHITESPACE_MATCHER = CharMatcher.anyOf(" \t\r\n");
-        private static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
+        static final CharMatcher TOKEN_MATCHER = ascii().and(CharMatcher.javaIsoControl().negate())
+                                                        .and(CharMatcher.isNot(' '))
+                                                        .and(CharMatcher.noneOf("()<>@,;:\\\"/[]?="));
+        static final CharMatcher LINEAR_WHITESPACE_MATCHER = CharMatcher.anyOf(" \t\r\n");
+        static final CharMatcher QUOTED_TEXT_MATCHER = ascii().and(CharMatcher.noneOf("\"\\\r"));
 
         static MediaType parse(String input) {
             final Tokenizer tokenizer = new Tokenizer(input);
@@ -201,9 +201,8 @@ public final class MediaType {
 
     private static final class MediaTypeAs {
 
-        private static final String PARAMETER_SEPARATOR = "; ";
-        private static final MapJoiner PARAMETER_JOINER = Joiner.on(PARAMETER_SEPARATOR)
-                                                                .withKeyValueSeparator('=');
+        static final String PARAMETER_SEPARATOR = "; ";
+        static final MapJoiner PARAMETER_JOINER = Joiner.on(PARAMETER_SEPARATOR).withKeyValueSeparator('=');
 
         static String string(MediaType mediaType) {
             requireNonNull(mediaType, "mediaType");
