@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.reactivestreams.Subscriber;
@@ -26,11 +28,17 @@ import io.aa.common.server.annotation.Put;
 
 public final class ServerBuilder {
 
-    private static final List<Class<? extends Annotation>> HTTP_METHOD_ANNOTATION_CLASSES =
-            List.of(Get.class, Post.class, Put.class, Patch.class, Delete.class);
+    private static final Map<Class<? extends Annotation>, HttpMethod>
+            HTTP_METHOD_ANNOTATION_CLASS_TO_HTTP_METHOD = Map.of(Get.class, HttpMethod.GET,
+                                                                 Post.class, HttpMethod.POST,
+                                                                 Put.class, HttpMethod.PUT,
+                                                                 Patch.class, HttpMethod.PATCH,
+                                                                 Delete.class, HttpMethod.DELETE);
+    private static final Set<Class<? extends Annotation>> HTTP_METHOD_ANNOTATION_CLASSES =
+            HTTP_METHOD_ANNOTATION_CLASS_TO_HTTP_METHOD.keySet();
 
-    private final Route route;
     private int port;
+    private final Route route;
 
     ServerBuilder() {
         route = new Route();
@@ -79,35 +87,35 @@ public final class ServerBuilder {
         requireNonNull(prefix, "prefix");
         requireNonNull(object, "object");
         requireNonNull(method, "method");
-
         assert isPublic(method);
         final T httpMethodAnnotation = method.getDeclaredAnnotation(httpMethodAnnotationClass);
         if (httpMethodAnnotation == null) {
             return;
         }
-        final HttpMethod httpMethod;
-        final String[] path;
-        if (httpMethodAnnotation instanceof Get annotatedHttpGet) {
-            httpMethod = HttpMethod.GET;
-            path = annotatedHttpGet.value();
-        } else if (httpMethodAnnotation instanceof Post annotatedHttpPost) {
-            httpMethod = HttpMethod.POST;
-            path = annotatedHttpPost.value();
-        } else if (httpMethodAnnotation instanceof Put annotatedHttpPut) {
-            httpMethod = HttpMethod.PUT;
-            path = annotatedHttpPut.value();
-        } else if (httpMethodAnnotation instanceof Patch annotatedHttpPatch) {
-            httpMethod = HttpMethod.PATCH;
-            path = annotatedHttpPatch.value();
-        } else if (httpMethodAnnotation instanceof Delete annotatedHttpDelete) {
-            httpMethod = HttpMethod.DELETE;
-            path = annotatedHttpDelete.value();
-        } else {
+        final HttpMethod httpMethod =
+                HTTP_METHOD_ANNOTATION_CLASS_TO_HTTP_METHOD.get(httpMethodAnnotationClass);
+        if (httpMethod == null) {
             throw new IllegalStateException(
                     "Unhandled HTTP method annotation: " + httpMethodAnnotation.getClass().getSimpleName());
         }
-        for (String path0 : path) {
-            route.add(httpMethod, prefix + path0, new AnnotatedHttpService(object, method));
+        for (String path : pathValue(httpMethodAnnotation)) {
+            route.add(httpMethod, prefix + path, new AnnotatedHttpService(object, method));
+        }
+    }
+
+    private static <T extends Annotation> String[] pathValue(T httpMethodAnnotation) {
+        requireNonNull(httpMethodAnnotation, "httpMethodAnnotation");
+        if (httpMethodAnnotation instanceof Get annotatedHttpGet) {
+            return annotatedHttpGet.value();
+        } else if (httpMethodAnnotation instanceof Post annotatedHttpPost) {
+            return annotatedHttpPost.value();
+        } else if (httpMethodAnnotation instanceof Put annotatedHttpPut) {
+            return annotatedHttpPut.value();
+        } else if (httpMethodAnnotation instanceof Patch annotatedHttpPatch) {
+            return annotatedHttpPatch.value();
+        } else {
+            assert httpMethodAnnotation instanceof Delete;
+            return ((Delete) httpMethodAnnotation).value();
         }
     }
 
@@ -163,6 +171,8 @@ public final class ServerBuilder {
         }
 
         HttpResponseWriter delegate(ServiceRequestContext ctx, HttpRequest req) throws Exception {
+            requireNonNull(ctx, "ctx");
+            requireNonNull(req, "req");
             final HttpResponseWriter downstream = HttpResponse.streaming();
             req.aggregate().thenAcceptAsync(aggregatedReq -> {
                 final HttpResponse upstream;
