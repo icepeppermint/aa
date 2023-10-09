@@ -15,7 +15,7 @@ import io.aa.common.client.HttpClient;
 
 public class ChatClientExample {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         HttpClient client = HttpClient.of("http://localhost:8080");
         HttpRequestWriter req = HttpRequest.streaming(RequestHeaders.of(HttpMethod.POST, "/chat"));
         client.execute(req).subscribe(new Subscriber<HttpObject>() {
