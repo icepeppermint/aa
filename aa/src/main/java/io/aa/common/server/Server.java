@@ -5,6 +5,8 @@ import static java.util.Objects.requireNonNull;
 import java.net.InetSocketAddress;
 import java.net.URI;
 
+import javax.annotation.Nullable;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -23,7 +25,7 @@ public final class Server {
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
-
+    @Nullable
     private Channel channel;
 
     Server(int port, Route route) {
@@ -52,12 +54,15 @@ public final class Server {
     }
 
     public URI httpUri() {
+        requireNonNull(channel, "channel");
         return URI.create("http://localhost:" + ((InetSocketAddress) channel.localAddress()).getPort());
     }
 
     public void stop() throws InterruptedException {
         try {
-            channel.close().sync();
+            if (channel != null) {
+                channel.close().sync();
+            }
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
