@@ -1,6 +1,6 @@
 # Aa
 
-> A reactive web framework inspired by Armeria
+> A reactive web framework inspired by Armeria.
 
 **Aa** is a reactive web framework that allows you to build APIs in the style of [Armeria](https://armeria.dev/).
 
