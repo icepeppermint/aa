@@ -1,9 +1,13 @@
 # Aa
 
-**Aa** is a project to learn about the internals of [Armeria](https://armeria.dev/).
+> A reactive web framework inspired by Armeria
 
-Because it is for research purposes, it lacks many of the features provided by typical web frameworks.
+**Aa** is a reactive web framework that allows you to build APIs in the style of [Armeria](https://armeria.dev/).
 
-Please refer to the examples directory for usage.
+It is fully reactive and designed for research purposes.
 
-**Most importantly, it should never be used in production.**
+Please note that it lacks many of the features provided by typical web frameworks.
+
+Refer to the [examples](https://github.com/icepeppermint/aa/tree/main/examples) directory for usage instructions.
+
+**Most importantly, this framework is not intended for production use.**
